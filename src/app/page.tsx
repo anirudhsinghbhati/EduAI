@@ -3,14 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, User, Shield, Briefcase, Heart, MoveRight } from "lucide-react";
 
-const roles = [
-  { name: "Teacher", icon: GraduationCap, href: "/login?role=teacher" },
-  { name: "Student", icon: User, href: "/login?role=student" },
-  { name: "Admin", icon: Shield, href: "/login?role=admin" },
-  { name: "Counselor", icon: Briefcase, href: "/login?role=counselor" },
-  { name: "Parent", icon: Heart, href: "/login?role=parent" },
-];
-
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -32,7 +24,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="relative w-full py-20 md:py-32 lg:py-40">
+        <section className="relative w-full py-20 md:py-32 lg:py-40 flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background -z-10"></div>
           <div className="container px-4 md:px-6 text-center">
             <div className="max-w-3xl mx-auto space-y-4">
@@ -44,39 +36,12 @@ export default function Home() {
               </p>
               <div className="flex justify-center">
                 <Button size="lg" className="group" asChild>
-                  <Link href="#role-selection">
+                  <Link href="/signup">
                     Get Started
                     <MoveRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="role-selection" className="w-full py-20 md:py-32 bg-background">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Choose Your Role</h2>
-                <p className="max-w-[700px] text-muted-foreground md:text-xl">
-                  Select your role to access a tailored experience designed just for you.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 pt-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              {roles.map((role) => (
-                <Link href={role.href} key={role.name}>
-                  <Card className="h-full transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20">
-                    <CardHeader className="flex flex-col items-center justify-center text-center gap-4">
-                      <div className="p-4 bg-primary/10 rounded-full">
-                        <role.icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <CardTitle>{role.name}</CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              ))}
             </div>
           </div>
         </section>
