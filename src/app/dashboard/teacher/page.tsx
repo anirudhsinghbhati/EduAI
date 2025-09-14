@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Users, UserCheck } from "lucide-react";
 import { AttendanceCapture } from "./components/attendance-capture";
+import { ManualAttendance } from "./components/manual-attendance";
 import {
   Table,
   TableBody,
@@ -90,7 +91,7 @@ export default function TeacherDashboardPage() {
     <div className="grid gap-6">
        <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-1">
+        <Card>
             <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <UserCheck className="w-5 h-5 text-primary" />
@@ -110,7 +111,7 @@ export default function TeacherDashboardPage() {
             </CardContent>
         </Card>
         
-        <Card className="lg:col-span-1">
+        <Card>
             <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <BarChart className="w-5 h-5 text-primary" />
@@ -129,57 +130,63 @@ export default function TeacherDashboardPage() {
                 )}
             </CardContent>
         </Card>
-
-        <AttendanceCapture />
+        
+        <div className="grid gap-6 row-start-2 lg:row-start-auto lg:col-span-1">
+             <AttendanceCapture />
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary" />
-            Recent Student Activity
-          </CardTitle>
-          <CardDescription>
-            Overview of recent attendance marks across your classes.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-             {recentActivity.length > 0 ? recentActivity.map((log, index) => (
-                <TableRow key={`${log.student.id}-${index}`}>
-                    <TableCell className="font-medium">{log.student.name}</TableCell>
-                    <TableCell>{log.className}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={statusVariants[log.status].variant}
-                        className={statusVariants[log.status].className}
-                      >
-                        {log.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{log.date}</TableCell>
-                </TableRow>
-             )) : (
+      <div className="grid gap-6 lg:grid-cols-2">
+        <ManualAttendance />
+
+        <Card>
+            <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Recent Student Activity
+            </CardTitle>
+            <CardDescription>
+                Overview of recent attendance marks across your classes.
+            </CardDescription>
+            </CardHeader>
+            <CardContent>
+            <Table>
+                <TableHeader>
                 <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                        No recent activity to display.
-                    </TableCell>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Class</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
                 </TableRow>
-             )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                {recentActivity.length > 0 ? recentActivity.map((log, index) => (
+                    <TableRow key={`${log.student.id}-${index}`}>
+                        <TableCell className="font-medium">{log.student.name}</TableCell>
+                        <TableCell>{log.className}</TableCell>
+                        <TableCell>
+                        <Badge 
+                            variant={statusVariants[log.status].variant}
+                            className={statusVariants[log.status].className}
+                        >
+                            {log.status}
+                        </Badge>
+                        </TableCell>
+                        <TableCell>{log.date}</TableCell>
+                    </TableRow>
+                )) : (
+                    <TableRow>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                            No recent activity to display.
+                        </TableCell>
+                    </TableRow>
+                )}
+                </TableBody>
+            </Table>
+            </CardContent>
+        </Card>
+      </div>
+
     </div>
   );
-
-    
+}
