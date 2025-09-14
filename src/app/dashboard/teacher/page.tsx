@@ -131,9 +131,7 @@ export default function TeacherDashboardPage() {
             </CardContent>
         </Card>
         
-        <div className="grid gap-6 row-start-2 lg:row-start-auto lg:col-span-1">
-             <AttendanceCapture />
-        </div>
+        <AttendanceCapture />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
