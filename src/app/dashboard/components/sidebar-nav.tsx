@@ -4,7 +4,7 @@
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle } from "lucide-react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
   student: [
@@ -22,13 +22,29 @@ type Role = 'student' | 'teacher' | 'admin';
 
 export function SidebarNav() {
   const searchParams = useSearchParams();
-  const role = (searchParams.get('role') as Role) || 'student';
+  const pathname = usePathname();
+  
+  const queryRole = searchParams.get('role') as Role;
+  
+  // Determine role from pathname if query param is not definitive
+  const deriveRoleFromPath = (): Role => {
+    if (pathname.startsWith('/dashboard/teacher')) return 'teacher';
+    if (pathname.startsWith('/dashboard/admin')) return 'admin';
+    if (pathname.startsWith('/dashboard/student')) return 'student';
+    return 'student'; // Default fallback
+  };
+
+  const role = queryRole || deriveRoleFromPath();
 
   const currentNav = navLinks[role] || navLinks.student;
   const currentRoleName = role.charAt(0).toUpperCase() + role.slice(1);
   
   const createHref = (href: string) => {
     const params = new URLSearchParams(searchParams);
+    // Ensure the correct role is in the query params for future navigation
+    if (!params.has('role') || params.get('role') !== role) {
+      params.set('role', role);
+    }
     return `${href}?${params.toString()}`;
   }
 
@@ -45,7 +61,7 @@ export function SidebarNav() {
         <SidebarMenu>
           {currentNav.map((item) => (
             <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton asChild variant="default" size="default">
+              <SidebarMenuButton asChild variant="default" size="default" isActive={pathname.startsWith(item.href)}>
                 <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
