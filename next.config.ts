@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'ei.study',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };

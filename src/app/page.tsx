@@ -41,7 +41,7 @@ export default function Home() {
                 </div>
               </div>
               <Image
-                src="https://images.unsplash.com/photo-1594665482333-a3b4d1158ea9?q=80&w=1740&auto=format&fit=crop"
+                src="https://ei.study/wp-content/uploads/elementor/thumbs/4-1-qdcrno8zblz2tck9z8mvv0xz6in0c23ze9u49ht9gw.jpg"
                 width="600"
                 height="400"
                 alt="Smiling student in a classroom"
