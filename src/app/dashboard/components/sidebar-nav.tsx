@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Workflow } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -66,6 +66,11 @@ export function SidebarNav() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild variant="default" size="default" isActive={pathname.startsWith('/user-flow')}>
+                <Link href={createHref("/user-flow")}><Workflow /> <span>User Flow</span></Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-2">
