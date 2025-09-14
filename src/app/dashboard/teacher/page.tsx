@@ -81,9 +81,12 @@ export default function TeacherDashboardPage() {
 
   useEffect(() => {
     loadDashboardData();
-    window.addEventListener('rosterUpdated', loadDashboardData);
+    const handleRosterUpdate = () => loadDashboardData();
+    window.addEventListener('rosterUpdated', handleRosterUpdate);
+    const interval = setInterval(loadDashboardData, 2000); // Poll for changes
     return () => {
-      window.removeEventListener('rosterUpdated', loadDashboardData);
+      window.removeEventListener('rosterUpdated', handleRosterUpdate);
+      clearInterval(interval);
     };
   }, []);
   
@@ -131,13 +134,14 @@ export default function TeacherDashboardPage() {
             </CardContent>
         </Card>
         
-        <AttendanceCapture />
+        <div className="lg:col-span-1 grid gap-6">
+            <AttendanceCapture />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <ManualAttendance />
-
-        <Card>
+         <ManualAttendance />
+         <Card className="lg:col-span-1">
             <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
@@ -184,7 +188,6 @@ export default function TeacherDashboardPage() {
             </CardContent>
         </Card>
       </div>
-
     </div>
   );
 }
