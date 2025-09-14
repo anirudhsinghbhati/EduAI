@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users } from "lucide-react";
+import { UploadCloud, UserPlus, Users, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
@@ -50,7 +50,7 @@ export function StudentRoster() {
         const reader = new FileReader();
         reader.onloadend = () => {
             const newStudent: Student = {
-                id: `s${roster.length + 1}`,
+                id: `s${Date.now()}`, // Use timestamp for more unique ID
                 name: newStudentName.trim(),
                 imageUrl: reader.result as string, // Store as data URI
             };
@@ -68,6 +68,19 @@ export function StudentRoster() {
     }
   };
 
+  const handleDeleteStudent = (studentId: string) => {
+    const studentToDelete = roster.find(s => s.id === studentId);
+    if (studentToDelete) {
+        setRoster(roster.filter((student) => student.id !== studentId));
+        toast({
+            variant: "destructive",
+            title: "🗑️ Student Removed",
+            description: `${studentToDelete.name} has been removed from the roster.`,
+        });
+    }
+  };
+
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -81,9 +94,20 @@ export function StudentRoster() {
         <ScrollArea className="h-[280px] pr-4 mb-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {roster.map((student) => (
-              <div key={student.id} className="text-center">
+              <div key={student.id} className="text-center group relative">
                 <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
                     <Image src={student.imageUrl} alt={student.name} layout="fill" objectFit="cover" />
+                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Button
+                            variant="destructive"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleDeleteStudent(student.id)}
+                            aria-label={`Delete ${student.name}`}
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
                 <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
               </div>
