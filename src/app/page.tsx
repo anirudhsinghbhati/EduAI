@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center justify-between px-4 md:px-6">
+        <div className="container flex h-14 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             <span className="font-bold">EduAI</span>
@@ -81,7 +81,7 @@ export default function Home() {
 
         {/* Features Section */}
         <section id="features" className="w-full py-20 md:py-24 lg:py-32 bg-secondary/50">
-          <div className="container px-4 md:px-6">
+          <div className="container">
             <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Everything You Need for a Smarter Classroom</h2>
               <p className="text-muted-foreground md:text-lg">
@@ -108,7 +108,7 @@ export default function Home() {
 
         {/* How It Works Section */}
         <section className="w-full py-20 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
+            <div className="container">
                  <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Get Started in 3 Simple Steps</h2>
                 </div>
