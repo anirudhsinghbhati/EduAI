@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users, Trash2, FolderPlus } from "lucide-react";
+import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -147,6 +147,20 @@ export function StudentRoster() {
     }
   };
 
+  const handleDeleteClass = (classId: string) => {
+    const classToDelete = roster.find(c => c.id === classId);
+    if (classToDelete) {
+      const updatedRoster = roster.filter(c => c.id !== classId);
+      setRoster(updatedRoster);
+      toast({
+        variant: "destructive",
+        title: "🗑️ Class Removed",
+        description: `Class "${classToDelete.name}" has been removed.`,
+      });
+    }
+  };
+
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -161,7 +175,38 @@ export function StudentRoster() {
             <Accordion type="multiple" className="w-full" defaultValue={roster.map(c => c.id)}>
             {roster.map((classGroup) => (
                 <AccordionItem key={classGroup.id} value={classGroup.id}>
-                    <AccordionTrigger>{classGroup.name} ({(classGroup.students || []).length} students)</AccordionTrigger>
+                    <div className="flex items-center w-full">
+                        <AccordionTrigger className="flex-1">
+                            {classGroup.name} ({(classGroup.students || []).length} students)
+                        </AccordionTrigger>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 ml-2"
+                                    aria-label={`Delete class ${classGroup.name}`}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <FolderX className="w-4 h-4 text-destructive" />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Class: {classGroup.name}?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                This action cannot be undone. This will permanently remove the class and all students within it.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteClass(classGroup.id)}>
+                                Continue
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
                     <AccordionContent>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
                         {(classGroup.students || []).map((student) => (
@@ -273,5 +318,3 @@ export function StudentRoster() {
     </Card>
   );
 }
-
-    
