@@ -3,111 +3,121 @@ import { Progress } from "@/components/ui/progress";
 import { GoalSetting } from "./components/goal-setting";
 import { LearningRecommendations } from "./components/learning-recommendations";
 import { Badge } from "@/components/ui/badge";
-import { Activity, BookOpen, CheckCircle, Target } from "lucide-react";
+import { Activity, BookOpen, CheckCircle, Target, Clock, Award, TrendingUp } from "lucide-react";
+
+const upcomingClasses = [
+    { time: "10:00 AM", subject: "Mathematics", topic: "Algebra II - Functions", location: "Room 201" },
+    { time: "11:30 AM", subject: "Physics", topic: "Newton's Laws of Motion", location: "Lab B" },
+    { time: "01:30 PM", subject: "History", topic: "The Renaissance Period", location: "Room 305" },
+];
+
+const courseProgress = [
+    { subject: "Mathematics", progress: 88, color: "bg-blue-500" },
+    { subject: "Physics", progress: 95, color: "bg-purple-500" },
+    { subject: "History", progress: 76, color: "bg-amber-500" },
+    { subject: "English Literature", progress: 82, color: "bg-green-500" },
+];
+
 
 export default function StudentDashboardPage() {
   return (
-    <div className="grid gap-6">
-        <h1 className="text-3xl font-bold">Student Dashboard</h1>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-1">
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-primary" />
-                Attendance Summary
-            </CardTitle>
-            <CardDescription>Your attendance for this month.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-            <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Overall Attendance</span>
-                <span className="text-lg font-bold text-primary">92%</span>
-            </div>
-            <Progress value={92} aria-label="92% attendance" />
-            <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Punctuality Score: 98%</span>
-                <span>Absences: 2 days</span>
-            </div>
-            </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2">
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                Today&apos;s Tasks
-            </CardTitle>
-            <CardDescription>Assignments and recommendations for today.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                <div>
-                <p className="font-medium">Complete Physics Chapter 3</p>
-                <p className="text-sm text-muted-foreground">Due: 11:59 PM</p>
-                </div>
-                <Badge>High Priority</Badge>
-            </div>
-            <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                <div>
-                <p className="font-medium">Review AI recommendation on Algebra</p>
-                <p className="text-sm text-muted-foreground">Topic: Polynomials</p>
-                </div>
-                <Badge variant="outline">AI Suggested</Badge>
-            </div>
-            </CardContent>
-        </Card>
-        
-        <div className="lg:col-span-3 grid gap-6 md:grid-cols-2">
-            <GoalSetting />
-            <LearningRecommendations />
+    <div className="grid gap-8">
+        <div className="space-y-1">
+            <h1 className="text-3xl font-bold">Welcome Back, Alex!</h1>
+            <p className="text-muted-foreground">Here's your summary for today. Keep up the great work!</p>
         </div>
 
-        <Card className="lg:col-span-1">
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-primary" />
-                Subjects Overview
-            </CardTitle>
-            <CardDescription>Your progress in key subjects.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="space-y-2">
-                <div className="flex justify-between"><p>Mathematics</p><p>88%</p></div>
-                <Progress value={88} />
-                </div>
-                <div className="space-y-2">
-                <div className="flex justify-between"><p>Physics</p><p>95%</p></div>
-                <Progress value={95} />
-                </div>
-                <div className="space-y-2">
-                <div className="flex justify-between"><p>History</p><p>76%</p></div>
-                <Progress value={76} />
-                </div>
-            </CardContent>
-        </Card>
-        
-        <Card className="lg:col-span-2">
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-primary" />
-                Streaks & Badges
-            </CardTitle>
-            <CardDescription>Stay motivated with your achievements.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center gap-8">
-                <div className="flex flex-col items-center gap-2">
-                    <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-3xl border-4 border-primary">
-                    15
-                    </div>
-                    <p className="font-medium">Day Streak</p>
-                </div>
-                <div className="flex gap-4">
-                    <div className="p-3 rounded-full bg-accent/20 text-accent" title="Perfect Attendance">📅</div>
-                    <div className="p-3 rounded-full bg-accent/20 text-accent" title="Top Performer">🏆</div>
-                    <div className="p-3 rounded-full bg-muted" title="Locked">❓</div>
-                </div>
-            </CardContent>
-        </Card>
+        {/* Top Row: Quick Stats */}
+        <div className="grid gap-6 md:grid-cols-3">
+             <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Overall Attendance</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                <div className="text-2xl font-bold">92%</div>
+                <p className="text-xs text-muted-foreground">2 days absent this semester</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Current GPA</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                <div className="text-2xl font-bold">3.85</div>
+                <p className="text-xs text-muted-foreground">+0.1 from last semester</p>
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Assignments</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                <div className="text-2xl font-bold">12/15 Done</div>
+                <p className="text-xs text-muted-foreground">3 pending for this week</p>
+                </CardContent>
+            </Card>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+             {/* Left Column: Schedule and Goals */}
+            <div className="lg:col-span-2 space-y-6">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-primary" />
+                            Upcoming Classes
+                        </CardTitle>
+                        <CardDescription>Your schedule for today, October 26th.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {upcomingClasses.map((item, index) => (
+                             <div key={index} className="flex items-start gap-4">
+                                <div className="text-right">
+                                    <p className="font-bold text-primary">{item.time}</p>
+                                </div>
+                                <div className="relative">
+                                    <div className="absolute left-2.5 top-0 h-full w-0.5 bg-border -translate-x-1/2"></div>
+                                    <div className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-background -translate-x-1/2"></div>
+                                </div>
+                                <div className="flex-1 pb-4">
+                                    <p className="font-semibold">{item.subject}</p>
+                                    <p className="text-sm text-muted-foreground">{item.topic}</p>
+                                    <p className="text-xs text-muted-foreground">{item.location}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+                <GoalSetting />
+            </div>
+
+            {/* Right Column: Progress and AI */}
+            <div className="lg:col-span-1 space-y-6">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="w-5 h-5 text-primary" />
+                            Course Progress
+                        </CardTitle>
+                         <CardDescription>Your progress in key subjects.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {courseProgress.map(course => (
+                             <div key={course.subject} className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                    <p className="font-medium">{course.subject}</p>
+                                    <p className="text-sm font-bold">{course.progress}%</p>
+                                </div>
+                                <Progress value={course.progress} indicatorClassName={course.color} />
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+                <LearningRecommendations />
+            </div>
         </div>
     </div>
   );

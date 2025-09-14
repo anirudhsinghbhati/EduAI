@@ -27,8 +27,8 @@ export function GoalSetting() {
   const handleAddGoal = () => {
     if (newGoal.trim()) {
       setGoals([
-        ...goals,
         { id: Date.now(), text: newGoal.trim(), completed: false },
+        ...goals,
       ]);
       setNewGoal("");
     }
@@ -47,7 +47,7 @@ export function GoalSetting() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5 text-primary" />
-            Goal & Skill Development
+            My Goals
         </CardTitle>
         <CardDescription>Set and track your personal and academic goals.</CardDescription>
       </CardHeader>
@@ -63,7 +63,7 @@ export function GoalSetting() {
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        <ScrollArea className="h-[200px] w-full pr-4">
+        <ScrollArea className="h-[200px] w-full pr-4 -mr-4">
           <div className="space-y-2">
             {goals.map((goal) => (
               <div
@@ -77,7 +77,7 @@ export function GoalSetting() {
                 />
                 <label
                   htmlFor={`goal-${goal.id}`}
-                  className={`flex-1 text-sm font-medium leading-none ${
+                  className={`flex-1 text-sm font-medium leading-none cursor-pointer ${
                     goal.completed ? "line-through text-muted-foreground" : ""
                   }`}
                 >

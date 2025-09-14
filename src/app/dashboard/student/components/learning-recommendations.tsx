@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { getLearningRecommendations } from "@/app/actions";
 import { Loader2, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function LearningRecommendations() {
   const [studentProfile, setStudentProfile] = useState("Struggling with Algebra, excels in Geometry. Prefers visual learning aids and interactive examples. Goal is to improve overall Math grade to an A.");
@@ -17,6 +18,7 @@ export function LearningRecommendations() {
 
   const handleSubmit = () => {
     startTransition(async () => {
+       setRecommendations("");
       const result = await getLearningRecommendations({
         studentProfile,
         pastPerformance,
@@ -30,46 +32,34 @@ export function LearningRecommendations() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          AI Learning Recommendations
+          AI Learning Coach
         </CardTitle>
         <CardDescription>
-          Get personalized study tips and content based on your profile.
+          Get personalized study tips based on your profile.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-2">
-          <Label htmlFor="student-profile">Student Profile</Label>
-          <Textarea
-            id="student-profile"
-            value={studentProfile}
-            onChange={(e) => setStudentProfile(e.target.value)}
-            placeholder="Describe learning style, strengths, weaknesses..."
-            rows={3}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="past-performance">Past Performance</Label>
-          <Textarea
-            id="past-performance"
-            value={pastPerformance}
-            onChange={(e) => setPastPerformance(e.target.value)}
-            placeholder="Enter recent grades, test scores, etc."
-            rows={3}
-          />
-        </div>
         <Button onClick={handleSubmit} disabled={isPending} className="w-full">
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Sparkles className="mr-2 h-4 w-4" />
           )}
-          Generate Recommendations
+          Generate New Recommendations
         </Button>
+        {isPending && !recommendations && (
+             <div className="flex items-center justify-center h-24 text-sm text-muted-foreground">
+                <p>Analyzing your profile...</p>
+            </div>
+        )}
         {recommendations && (
-          <ScrollArea className="h-[150px] w-full rounded-md border p-4">
-             <h4 className="mb-2 font-medium text-lg">Your Personalized Path:</h4>
-            <div className="whitespace-pre-wrap text-sm">{recommendations}</div>
-          </ScrollArea>
+           <Alert>
+                <Sparkles className="h-4 w-4" />
+                <AlertTitle>Your Personalized Path</AlertTitle>
+                <AlertDescription className="whitespace-pre-wrap">
+                    {recommendations}
+                </AlertDescription>
+            </Alert>
         )}
       </CardContent>
     </Card>
