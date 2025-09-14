@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera, Check, Loader2, Upload, Users } from "lucide-react";
 import { identifyPresentStudents } from "@/app/actions";
-import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
+import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
 import { useToast } from "@/hooks/use-toast";
 
 type AttendanceResult = {
@@ -34,7 +34,6 @@ type AttendanceResult = {
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
-
 export function AttendanceCapture() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,19 +42,22 @@ export function AttendanceCapture() {
   const [classPhotoDataUri, setClassPhotoDataUri] = useState<string | null>(
     null
   );
-  const [currentRoster, setCurrentRoster] = useState<Student[]>(initialRoster);
+  const [currentRoster, setCurrentRoster] = useState<Student[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     // Load the roster from localStorage to ensure it has the latest student data
-    // This runs on the client, so it's safe to access localStorage.
     try {
         const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (savedRoster) {
-            setCurrentRoster(JSON.parse(savedRoster));
-        }
+        const rosterData: ClassGroup[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
+        // Flatten all students from all classes into a single list for attendance
+        const allStudents = rosterData.flatMap(classGroup => classGroup.students || []);
+        setCurrentRoster(allStudents);
     } catch (error) {
         console.error("Could not load roster for attendance", error);
+        // Fallback to initial data if localStorage fails
+        const allStudents = initialRoster.flatMap(classGroup => classGroup.students || []);
+        setCurrentRoster(allStudents);
     }
   }, [isOpen]); // Reload roster when dialog is opened
 
@@ -88,7 +90,7 @@ export function AttendanceCapture() {
   };
 
   const handleConfirm = async () => {
-    if (!classPhotoDataUri) return;
+    if (!classPhotoDataUri || currentRoster.length === 0) return;
 
     setIsLoading(true);
     setResult(null);
@@ -97,7 +99,8 @@ export function AttendanceCapture() {
       // Prepare roster data by converting image URLs to data URIs
       const rosterWithDataUris = await Promise.all(
         currentRoster.map(async (student) => ({
-          ...student,
+          id: student.id,
+          name: student.name,
           photoDataUri: await toDataUri(student.imageUrl),
         }))
       );
@@ -185,7 +188,7 @@ export function AttendanceCapture() {
                   <Label htmlFor="picture">Class Photo</Label>
                   {imagePreview ? (
                     <div className="relative aspect-video w-full rounded-md overflow-hidden">
-                      <Image src={imagePreview} alt="Class photo preview" layout="fill" objectFit="cover" />
+                      <Image src={imagePreview} alt="Class photo preview" fill objectFit="cover" />
                     </div>
                   ) : (
                     <div className="flex w-full justify-center items-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md">
