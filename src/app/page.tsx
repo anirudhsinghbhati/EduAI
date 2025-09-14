@@ -113,7 +113,7 @@ export default function Home() {
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Get Started in 3 Simple Steps</h2>
                 </div>
                 <div className="relative grid gap-10 lg:grid-cols-3">
-                     <div className="absolute top-1/2 left-0 w-full h-0.5 bg-border -translate-y-1/2 hidden lg:block" />
+                     <div className="absolute top-8 left-0 right-0 h-0.5 bg-border hidden lg:block" />
                     <div className="relative text-center">
                          <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 z-10 relative">1</div>
                         <h3 className="text-xl font-semibold mb-2">Create Your Account</h3>
