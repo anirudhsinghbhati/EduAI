@@ -133,61 +133,59 @@ export default function TeacherDashboardPage() {
                 )}
             </CardContent>
         </Card>
-        
-        <div className="lg:col-span-1 grid gap-6">
+
+        <div className="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 md:col-span-2 lg:col-span-1">
             <AttendanceCapture />
+            <ManualAttendance />
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-         <ManualAttendance />
-         <Card className="lg:col-span-1">
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                Recent Student Activity
-            </CardTitle>
-            <CardDescription>
-                Overview of recent attendance marks across your classes.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Student</TableHead>
-                    <TableHead>Class</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {recentActivity.length > 0 ? recentActivity.map((log, index) => (
-                    <TableRow key={`${log.student.id}-${index}`}>
-                        <TableCell className="font-medium">{log.student.name}</TableCell>
-                        <TableCell>{log.className}</TableCell>
-                        <TableCell>
-                        <Badge 
-                            variant={statusVariants[log.status].variant}
-                            className={statusVariants[log.status].className}
-                        >
-                            {log.status}
-                        </Badge>
-                        </TableCell>
-                        <TableCell>{log.date}</TableCell>
-                    </TableRow>
-                )) : (
-                    <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                            No recent activity to display.
-                        </TableCell>
-                    </TableRow>
-                )}
-                </TableBody>
-            </Table>
-            </CardContent>
-        </Card>
-      </div>
+      <Card>
+          <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              Recent Student Activity
+          </CardTitle>
+          <CardDescription>
+              Overview of recent attendance marks across your classes.
+          </CardDescription>
+          </CardHeader>
+          <CardContent>
+          <Table>
+              <TableHeader>
+              <TableRow>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Class</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+              </TableRow>
+              </TableHeader>
+              <TableBody>
+              {recentActivity.length > 0 ? recentActivity.map((log, index) => (
+                  <TableRow key={`${log.student.id}-${index}`}>
+                      <TableCell className="font-medium">{log.student.name}</TableCell>
+                      <TableCell>{log.className}</TableCell>
+                      <TableCell>
+                      <Badge 
+                          variant={statusVariants[log.status].variant}
+                          className={statusVariants[log.status].className}
+                      >
+                          {log.status}
+                      </Badge>
+                      </TableCell>
+                      <TableCell>{log.date}</TableCell>
+                  </TableRow>
+              )) : (
+                  <TableRow>
+                      <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                          No recent activity to display.
+                      </TableCell>
+                  </TableRow>
+              )}
+              </TableBody>
+          </Table>
+          </CardContent>
+      </Card>
     </div>
   );
 }
