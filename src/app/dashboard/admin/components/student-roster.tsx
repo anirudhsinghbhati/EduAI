@@ -82,7 +82,7 @@ export function StudentRoster() {
                 if (classGroup.id === selectedClassId) {
                     return {
                         ...classGroup,
-                        students: [...classGroup.students, newStudent],
+                        students: [...(classGroup.students || []), newStudent],
                     };
                 }
                 return classGroup;
@@ -112,13 +112,13 @@ export function StudentRoster() {
     let studentName = "";
     const updatedRoster = roster.map(classGroup => {
         if (classGroup.id === classId) {
-            const studentToDelete = classGroup.students.find(s => s.id === studentId);
+            const studentToDelete = (classGroup.students || []).find(s => s.id === studentId);
             if (studentToDelete) {
                 studentName = studentToDelete.name;
             }
             return {
                 ...classGroup,
-                students: classGroup.students.filter(s => s.id !== studentId),
+                students: (classGroup.students || []).filter(s => s.id !== studentId),
             };
         }
         return classGroup;
@@ -149,10 +149,10 @@ export function StudentRoster() {
             <Accordion type="multiple" className="w-full" defaultValue={roster.map(c => c.id)}>
             {roster.map((classGroup) => (
                 <AccordionItem key={classGroup.id} value={classGroup.id}>
-                    <AccordionTrigger>{classGroup.name} ({classGroup.students.length} students)</AccordionTrigger>
+                    <AccordionTrigger>{classGroup.name} ({(classGroup.students || []).length} students)</AccordionTrigger>
                     <AccordionContent>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
-                        {classGroup.students.map((student) => (
+                        {(classGroup.students || []).map((student) => (
                         <div key={student.id} className="text-center group relative">
                             <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
                                 <Image src={student.imageUrl} alt={student.name} layout="fill" objectFit="cover" />
@@ -171,7 +171,7 @@ export function StudentRoster() {
                             <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
                         </div>
                         ))}
-                         {classGroup.students.length === 0 && (
+                         {(classGroup.students || []).length === 0 && (
                             <p className="col-span-full text-center text-sm text-muted-foreground py-4">No students in this class yet.</p>
                         )}
                         </div>
