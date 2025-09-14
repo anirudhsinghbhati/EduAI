@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera, Check, Loader2, Upload, Users } from "lucide-react";
 import { identifyPresentStudents } from "@/app/actions";
-import { studentRoster, type Student } from "@/app/lib/student-roster";
+import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
 import { useToast } from "@/hooks/use-toast";
 
 type AttendanceResult = {
@@ -31,13 +32,32 @@ type AttendanceResult = {
   absent: Student[];
 };
 
+const LOCAL_STORAGE_KEY = 'studentRoster';
+
+
 export function AttendanceCapture() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AttendanceResult | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [classPhotoDataUri, setClassPhotoDataUri] = useState<string | null>(null);
+  const [classPhotoDataUri, setClassPhotoDataUri] = useState<string | null>(
+    null
+  );
+  const [currentRoster, setCurrentRoster] = useState<Student[]>(initialRoster);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Load the roster from localStorage to ensure it has the latest student data
+    // This runs on the client, so it's safe to access localStorage.
+    try {
+        const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedRoster) {
+            setCurrentRoster(JSON.parse(savedRoster));
+        }
+    } catch (error) {
+        console.error("Could not load roster for attendance", error);
+    }
+  }, [isOpen]); // Reload roster when dialog is opened
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -53,6 +73,10 @@ export function AttendanceCapture() {
   };
 
   const toDataUri = async (url: string): Promise<string> => {
+    // If it's already a data URI, just return it.
+    if (url.startsWith('data:')) {
+        return url;
+    }
     const response = await fetch(url);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
@@ -72,7 +96,7 @@ export function AttendanceCapture() {
     try {
       // Prepare roster data by converting image URLs to data URIs
       const rosterWithDataUris = await Promise.all(
-        studentRoster.map(async (student) => ({
+        currentRoster.map(async (student) => ({
           ...student,
           photoDataUri: await toDataUri(student.imageUrl),
         }))
@@ -83,8 +107,8 @@ export function AttendanceCapture() {
         studentRoster: rosterWithDataUris,
       });
 
-      const present = studentRoster.filter((s) => presentStudentIds.includes(s.id));
-      const absent = studentRoster.filter((s) => !presentStudentIds.includes(s.id));
+      const present = currentRoster.filter((s) => presentStudentIds.includes(s.id));
+      const absent = currentRoster.filter((s) => !presentStudentIds.includes(s.id));
       setResult({ present, absent });
 
     } catch (error) {
@@ -138,7 +162,7 @@ export function AttendanceCapture() {
                      <Check className="h-8 w-8 text-green-500 mr-3" />
                      <div>
                         <p className="font-medium text-lg text-green-700 dark:text-green-300">Analysis Complete!</p>
-                        <p className="text-sm text-muted-foreground">{result.present.length} of {studentRoster.length} students marked present.</p>
+                        <p className="text-sm text-muted-foreground">{result.present.length} of {currentRoster.length} students marked present.</p>
                      </div>
                   </div>
                   <div>

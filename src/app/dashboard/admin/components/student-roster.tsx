@@ -1,39 +1,70 @@
+
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { studentRoster, type Student } from "@/app/lib/student-roster";
+import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
 import { UploadCloud, UserPlus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const LOCAL_STORAGE_KEY = 'studentRoster';
+
 export function StudentRoster() {
-  const [roster, setRoster] = useState<Student[]>(studentRoster);
+  const [roster, setRoster] = useState<Student[]>([]);
   const [newStudentName, setNewStudentName] = useState("");
   const [newStudentFile, setNewStudentFile] = useState<File | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    try {
+      const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedRoster) {
+        setRoster(JSON.parse(savedRoster));
+      } else {
+        setRoster(initialRoster);
+      }
+    } catch (error) {
+        console.error("Failed to load roster from localStorage", error);
+        setRoster(initialRoster);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (roster.length > 0) {
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(roster));
+        } catch (error) {
+            console.error("Failed to save roster to localStorage", error);
+        }
+    }
+  }, [roster]);
+
   const handleAddStudent = (e: React.FormEvent) => {
     e.preventDefault();
     if (newStudentName.trim() && newStudentFile) {
-      const newStudent: Student = {
-        id: `s${roster.length + 1}`,
-        name: newStudentName.trim(),
-        imageUrl: URL.createObjectURL(newStudentFile),
-      };
-      setRoster([...roster, newStudent]);
-      setNewStudentName("");
-      setNewStudentFile(null);
-      (document.getElementById('student-photo') as HTMLInputElement).value = '';
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const newStudent: Student = {
+                id: `s${roster.length + 1}`,
+                name: newStudentName.trim(),
+                imageUrl: reader.result as string, // Store as data URI
+            };
+            setRoster([...roster, newStudent]);
+            setNewStudentName("");
+            setNewStudentFile(null);
+            (document.getElementById('student-photo') as HTMLInputElement).value = '';
 
-      toast({
-        title: "✅ Student Added",
-        description: `${newStudent.name} has been added to the roster.`,
-      });
+            toast({
+                title: "✅ Student Added",
+                description: `${newStudent.name} has been added to the roster.`,
+            });
+        };
+        reader.readAsDataURL(newStudentFile);
     }
   };
 
