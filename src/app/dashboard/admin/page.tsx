@@ -6,43 +6,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
 import { BarChart, Users, Activity } from "lucide-react";
-import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
+import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
 export default function AdminDashboardPage() {
-  const [studentCount, setStudentCount] = useState(initialRoster.length);
+  const [studentCount, setStudentCount] = useState(0);
 
   useEffect(() => {
-    try {
-      const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (savedRoster) {
-        const roster: Student[] = JSON.parse(savedRoster);
-        setStudentCount(roster.length);
-      }
-    } catch (error) {
-      console.error("Failed to load roster from localStorage for count", error);
-      setStudentCount(initialRoster.length);
-    }
+    const calculateTotalStudents = (roster: ClassGroup[]) => {
+        return roster.reduce((total, classGroup) => total + classGroup.students.length, 0);
+    };
 
-    // Listen for changes to the roster from other components
-    const handleStorageChange = () => {
-        const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (savedRoster) {
-            setStudentCount(JSON.parse(savedRoster).length);
+    const updateStudentCount = () => {
+        try {
+            const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+            const roster: ClassGroup[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
+            setStudentCount(calculateTotalStudents(roster));
+        } catch (error) {
+            console.error("Failed to load or parse roster from localStorage", error);
+            setStudentCount(calculateTotalStudents(initialRoster));
         }
     };
-    window.addEventListener('storage', handleStorageChange);
-    // A custom event could also be used here if storage event proves unreliable for same-page updates.
     
-    // A simple polling fallback to ensure the count updates if the storage event doesn't fire
-    const interval = setInterval(() => {
-        handleStorageChange();
-    }, 1000);
+    updateStudentCount(); // Initial count
+
+    // A custom event listener to handle updates from the StudentRoster component
+    const handleRosterUpdate = () => {
+        updateStudentCount();
+    };
+
+    window.addEventListener('rosterUpdated', handleRosterUpdate);
+    
+    // A simple polling fallback to ensure the count updates if the event doesn't fire
+    const interval = setInterval(updateStudentCount, 1000);
 
 
     return () => {
-        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('rosterUpdated', handleRosterUpdate);
         clearInterval(interval);
     };
   }, []);

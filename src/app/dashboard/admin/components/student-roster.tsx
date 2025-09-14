@@ -8,16 +8,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users, Trash2 } from "lucide-react";
+import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
+import { UploadCloud, UserPlus, Users, Trash2, FolderPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
 export function StudentRoster() {
-  const [roster, setRoster] = useState<Student[]>([]);
+  const [roster, setRoster] = useState<ClassGroup[]>([]);
   const [newStudentName, setNewStudentName] = useState("");
   const [newStudentFile, setNewStudentFile] = useState<File | null>(null);
+  const [selectedClassId, setSelectedClassId] = useState<string>("");
+  const [newClassName, setNewClassName] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,46 +47,96 @@ export function StudentRoster() {
         }
     }
   }, [roster]);
+  
+  const handleAddNewClass = () => {
+    if (newClassName.trim()) {
+      const newClass: ClassGroup = {
+        id: `c${Date.now()}`,
+        name: newClassName.trim(),
+        students: [],
+      };
+      const updatedRoster = [...roster, newClass];
+      setRoster(updatedRoster);
+      setSelectedClassId(newClass.id); // Auto-select the new class
+      setNewClassName(""); // Clear the input
+       toast({
+        title: "✅ Class Created",
+        description: `Class "${newClass.name}" has been added.`,
+      });
+    }
+  };
+
 
   const handleAddStudent = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newStudentName.trim() && newStudentFile) {
+    if (newStudentName.trim() && newStudentFile && selectedClassId) {
         const reader = new FileReader();
         reader.onloadend = () => {
             const newStudent: Student = {
-                id: `s${Date.now()}`, // Use timestamp for more unique ID
+                id: `s${Date.now()}`,
                 name: newStudentName.trim(),
-                imageUrl: reader.result as string, // Store as data URI
+                imageUrl: reader.result as string,
             };
-            setRoster([...roster, newStudent]);
+
+            const updatedRoster = roster.map(classGroup => {
+                if (classGroup.id === selectedClassId) {
+                    return {
+                        ...classGroup,
+                        students: [...classGroup.students, newStudent],
+                    };
+                }
+                return classGroup;
+            });
+
+            setRoster(updatedRoster);
             setNewStudentName("");
             setNewStudentFile(null);
             (document.getElementById('student-photo') as HTMLInputElement).value = '';
 
             toast({
                 title: "✅ Student Added",
-                description: `${newStudent.name} has been added to the roster.`,
+                description: `${newStudent.name} has been added to the selected class.`,
             });
         };
         reader.readAsDataURL(newStudentFile);
-    }
-  };
-
-  const handleDeleteStudent = (studentId: string) => {
-    const studentToDelete = roster.find(s => s.id === studentId);
-    if (studentToDelete) {
-        setRoster(roster.filter((student) => student.id !== studentId));
+    } else {
         toast({
             variant: "destructive",
-            title: "🗑️ Student Removed",
-            description: `${studentToDelete.name} has been removed from the roster.`,
+            title: "⚠️ Missing Information",
+            description: "Please select a class, provide a name, and choose a photo.",
         });
     }
   };
 
+  const handleDeleteStudent = (classId: string, studentId: string) => {
+    let studentName = "";
+    const updatedRoster = roster.map(classGroup => {
+        if (classGroup.id === classId) {
+            const studentToDelete = classGroup.students.find(s => s.id === studentId);
+            if (studentToDelete) {
+                studentName = studentToDelete.name;
+            }
+            return {
+                ...classGroup,
+                students: classGroup.students.filter(s => s.id !== studentId),
+            };
+        }
+        return classGroup;
+    });
+
+    setRoster(updatedRoster);
+    
+    if (studentName) {
+        toast({
+            variant: "destructive",
+            title: "🗑️ Student Removed",
+            description: `${studentName} has been removed from the roster.`,
+        });
+    }
+  };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="w-5 h-5 text-primary" />
@@ -90,57 +144,102 @@ export function StudentRoster() {
         </CardTitle>
         <CardDescription>Manage student profiles and photos for AI attendance.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[280px] pr-4 mb-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {roster.map((student) => (
-              <div key={student.id} className="text-center group relative">
-                <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
-                    <Image src={student.imageUrl} alt={student.name} layout="fill" objectFit="cover" />
-                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Button
-                            variant="destructive"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleDeleteStudent(student.id)}
-                            aria-label={`Delete ${student.name}`}
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </Button>
+      <CardContent className="flex-1 flex flex-col">
+        <ScrollArea className="flex-1 -mr-4 pr-4 mb-4">
+            <Accordion type="multiple" className="w-full" defaultValue={roster.map(c => c.id)}>
+            {roster.map((classGroup) => (
+                <AccordionItem key={classGroup.id} value={classGroup.id}>
+                    <AccordionTrigger>{classGroup.name} ({classGroup.students.length} students)</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
+                        {classGroup.students.map((student) => (
+                        <div key={student.id} className="text-center group relative">
+                            <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
+                                <Image src={student.imageUrl} alt={student.name} layout="fill" objectFit="cover" />
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <Button
+                                        variant="destructive"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => handleDeleteStudent(classGroup.id, student.id)}
+                                        aria-label={`Delete ${student.name}`}
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                            <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
+                        </div>
+                        ))}
+                         {classGroup.students.length === 0 && (
+                            <p className="col-span-full text-center text-sm text-muted-foreground py-4">No students in this class yet.</p>
+                        )}
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            ))}
+            </Accordion>
+        </ScrollArea>
+        <div className="pt-4 border-t">
+            <h4 className="font-medium flex items-center gap-2 mb-4"><UserPlus className="w-4 h-4" /> Add New Student</h4>
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="new-class-name">New Class Name</Label>
+                    <div className="flex gap-2">
+                    <Input
+                        id="new-class-name"
+                        value={newClassName}
+                        onChange={(e) => setNewClassName(e.target.value)}
+                        placeholder="e.g., Grade 9 History"
+                    />
+                    <Button onClick={handleAddNewClass} size="icon" aria-label="Add new class">
+                        <FolderPlus className="w-4 h-4" />
+                    </Button>
                     </div>
                 </div>
-                <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-        <form onSubmit={handleAddStudent} className="space-y-4 pt-4 border-t">
-            <h4 className="font-medium flex items-center gap-2"><UserPlus className="w-4 h-4" /> Add New Student</h4>
-            <div className="grid gap-2">
-                <Label htmlFor="student-name">Student Name</Label>
-                <Input
-                id="student-name"
-                value={newStudentName}
-                onChange={(e) => setNewStudentName(e.target.value)}
-                placeholder="e.g., Jane Doe"
-                required
-                />
+                <div className="grid gap-2">
+                    <Label htmlFor="class-select">Select Class</Label>
+                    <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                        <SelectTrigger id="class-select">
+                            <SelectValue placeholder="Choose a class..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {roster.map((classGroup) => (
+                                <SelectItem key={classGroup.id} value={classGroup.id}>
+                                    {classGroup.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
-            <div className="grid gap-2">
-                <Label htmlFor="student-photo">Student Photo</Label>
-                <Input
-                id="student-photo"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
-                required
-                />
-            </div>
-            <Button type="submit" className="w-full">
-                <UploadCloud className="mr-2" />
-                Add to Roster
-            </Button>
-        </form>
+            <form onSubmit={handleAddStudent} className="space-y-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="student-name">Student Name</Label>
+                    <Input
+                    id="student-name"
+                    value={newStudentName}
+                    onChange={(e) => setNewStudentName(e.target.value)}
+                    placeholder="e.g., Jane Doe"
+                    required
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="student-photo">Student Photo</Label>
+                    <Input
+                    id="student-photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
+                    required
+                    />
+                </div>
+                <Button type="submit" className="w-full">
+                    <UploadCloud className="mr-2" />
+                    Add to Roster
+                </Button>
+            </form>
+        </div>
       </CardContent>
     </Card>
   );
