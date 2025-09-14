@@ -17,7 +17,7 @@ export default function LoginPage() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to login to your account.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -31,11 +31,24 @@ export default function LoginPage() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
-        <Button className="w-full" asChild>
-          {/* For prototype purposes, login as student */}
-          <Link href="/dashboard">Login</Link>
-        </Button>
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="w-full text-center text-sm text-muted-foreground mb-2">
+            For prototype purposes, login as:
+        </div>
+        <div className="w-full grid grid-cols-2 gap-2">
+             <Button asChild>
+                <Link href="/dashboard?role=student">Student</Link>
+             </Button>
+             <Button asChild>
+                <Link href="/dashboard?role=teacher">Teacher</Link>
+             </Button>
+             <Button asChild>
+                <Link href="/dashboard?role=admin">Admin</Link>
+             </Button>
+             <Button asChild>
+                <Link href="/dashboard">Other</Link>
+             </Button>
+        </div>
+        <div className="text-center text-sm text-muted-foreground mt-4">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="underline hover:text-primary">
             Sign up
