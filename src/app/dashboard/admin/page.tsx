@@ -15,7 +15,13 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     const calculateTotalStudents = (roster: ClassGroup[]) => {
-        return roster.reduce((total, classGroup) => total + classGroup.students.length, 0);
+        return roster.reduce((total, classGroup) => {
+            // Add a check to ensure classGroup.students is an array
+            if (classGroup && Array.isArray(classGroup.students)) {
+                return total + classGroup.students.length;
+            }
+            return total;
+        }, 0);
     };
 
     const updateStudentCount = () => {
