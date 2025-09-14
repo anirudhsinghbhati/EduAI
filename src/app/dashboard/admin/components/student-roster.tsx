@@ -13,6 +13,18 @@ import { UploadCloud, UserPlus, Users, Trash2, FolderPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
@@ -155,17 +167,34 @@ export function StudentRoster() {
                         {(classGroup.students || []).map((student) => (
                         <div key={student.id} className="text-center group relative">
                             <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
-                                <Image src={student.imageUrl} alt={student.name} layout="fill" objectFit="cover" />
+                                <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <Button
-                                        variant="destructive"
-                                        size="icon"
-                                        className="h-8 w-8"
-                                        onClick={() => handleDeleteStudent(classGroup.id, student.id)}
-                                        aria-label={`Delete ${student.name}`}
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            className="h-8 w-8"
+                                            aria-label={`Delete ${student.name}`}
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently remove {student.name} from the roster.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
+                                            Continue
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                             </div>
                             <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
@@ -244,3 +273,5 @@ export function StudentRoster() {
     </Card>
   );
 }
+
+    
