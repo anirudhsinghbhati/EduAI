@@ -41,12 +41,12 @@ export default function Home() {
                 </div>
               </div>
               <Image
-                src="https://picsum.photos/seed/indian-students/600/400"
+                src="https://images.unsplash.com/photo-1594665482333-a3b4d1158ea9?q=80&w=1740&auto=format&fit=crop"
                 width="600"
                 height="400"
-                alt="Indian students in a classroom"
+                alt="Smiling student in a classroom"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                data-ai-hint="indian students classroom"
+                data-ai-hint="indian student classroom"
               />
             </div>
           </div>
