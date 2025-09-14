@@ -1,15 +1,58 @@
+
+"use client";
+
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
 import { BarChart, Users, Activity } from "lucide-react";
+import { studentRoster as initialRoster, type Student } from "@/app/lib/student-roster";
 
-const stats = [
-  { title: "Total Students", value: "1,250", icon: Users },
-  { title: "Average Attendance", value: "93%", icon: Activity },
-  { title: "Teachers Active", value: "58", icon: Users },
-];
+const LOCAL_STORAGE_KEY = 'studentRoster';
 
 export default function AdminDashboardPage() {
+  const [studentCount, setStudentCount] = useState(initialRoster.length);
+
+  useEffect(() => {
+    try {
+      const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedRoster) {
+        const roster: Student[] = JSON.parse(savedRoster);
+        setStudentCount(roster.length);
+      }
+    } catch (error) {
+      console.error("Failed to load roster from localStorage for count", error);
+      setStudentCount(initialRoster.length);
+    }
+
+    // Listen for changes to the roster from other components
+    const handleStorageChange = () => {
+        const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedRoster) {
+            setStudentCount(JSON.parse(savedRoster).length);
+        }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // A custom event could also be used here if storage event proves unreliable for same-page updates.
+    
+    // A simple polling fallback to ensure the count updates if the storage event doesn't fire
+    const interval = setInterval(() => {
+        handleStorageChange();
+    }, 1000);
+
+
+    return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(interval);
+    };
+  }, []);
+
+  const stats = [
+    { title: "Total Students", value: studentCount.toString(), icon: Users },
+    { title: "Average Attendance", value: "93%", icon: Activity },
+    { title: "Teachers Active", value: "58", icon: Users },
+  ];
+
   return (
     <div className="grid gap-6">
       <div className="grid gap-6 md:grid-cols-3">
