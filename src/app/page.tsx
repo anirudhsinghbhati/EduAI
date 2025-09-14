@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between">
+        <div className="flex h-14 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             <span className="font-bold">EduAI</span>
@@ -112,8 +112,8 @@ export default function Home() {
                  <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Get Started in 3 Simple Steps</h2>
                 </div>
-                <div className="relative grid gap-10 lg:grid-cols-3">
-                     <div className="absolute top-8 left-0 right-0 h-0.5 bg-border hidden lg:block" />
+                <div className="relative grid gap-10 lg:grid-cols-3 items-start">
+                     <div className="absolute top-8 left-0 right-0 h-0.5 bg-border hidden lg:block w-full" />
                     <div className="relative text-center">
                          <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 z-10 relative">1</div>
                         <h3 className="text-xl font-semibold mb-2">Create Your Account</h3>
