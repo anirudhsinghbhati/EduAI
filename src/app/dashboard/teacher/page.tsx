@@ -37,6 +37,43 @@ export default function TeacherDashboardPage() {
   const [roster, setRoster] = useState<ClassGroup[]>([]);
   const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
   const [attendanceSummary, setAttendanceSummary] = useState({ present: 0, absent: 0 });
+  const [classAverages, setClassAverages] = useState<Record<string, number>>({});
+
+  const generateMockData = (currentRoster: ClassGroup[]) => {
+    const allStudents = currentRoster.flatMap(cg => 
+        (cg.students || []).map(s => ({ ...s, className: cg.name }))
+    );
+    
+    if (allStudents.length === 0) {
+      setRecentActivity([]);
+      setAttendanceSummary({ present: 100, absent: 0 });
+      setClassAverages({});
+      return;
+    }
+
+    // Generate stable but random-looking data
+    const statuses: ('Present' | 'Absent' | 'Late')[] = ['Present', 'Absent', 'Late', 'Present', 'Present'];
+    const activity: ActivityLog[] = allStudents.slice(0, 5).map((student, index) => ({
+      student: student,
+      className: student.className,
+      status: statuses[index % statuses.length],
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    }));
+    setRecentActivity(activity);
+
+    const presentCount = allStudents.filter((_, i) => (i % 10) !== 0).length; // ~90% attendance
+    const totalCount = allStudents.length;
+    const presentPercentage = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 100;
+    setAttendanceSummary({ present: presentPercentage, absent: 100 - presentPercentage });
+    
+    const averages: Record<string, number> = {};
+    currentRoster.forEach(cg => {
+        // Simple hash to create a pseudo-random but stable average
+        const avg = cg.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 20 + 78;
+        averages[cg.id] = avg;
+    });
+    setClassAverages(averages);
+  };
 
   const loadDashboardData = () => {
     try {
@@ -50,43 +87,14 @@ export default function TeacherDashboardPage() {
       generateMockData(initialRoster);
     }
   };
-  
-  const generateMockData = (currentRoster: ClassGroup[]) => {
-    const allStudents = currentRoster.flatMap(cg => 
-        (cg.students || []).map(s => ({ ...s, className: cg.name }))
-    );
-    
-    if (allStudents.length === 0) {
-      setRecentActivity([]);
-      setAttendanceSummary({ present: 100, absent: 0 });
-      return;
-    }
-
-    const statuses: ('Present' | 'Absent' | 'Late')[] = ['Present', 'Absent', 'Late', 'Present', 'Present'];
-    const shuffledStudents = [...allStudents].sort(() => 0.5 - Math.random());
-    
-    const activity: ActivityLog[] = shuffledStudents.slice(0, 5).map(student => ({
-      student: student,
-      className: student.className,
-      status: statuses[Math.floor(Math.random() * statuses.length)],
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    }));
-    setRecentActivity(activity);
-
-    const presentCount = allStudents.filter(() => Math.random() > 0.1).length; // Simulate ~90% attendance
-    const totalCount = allStudents.length;
-    const presentPercentage = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 100;
-    setAttendanceSummary({ present: presentPercentage, absent: 100 - presentPercentage });
-  };
 
   useEffect(() => {
     loadDashboardData();
-    const handleRosterUpdate = () => loadDashboardData();
-    window.addEventListener('rosterUpdated', handleRosterUpdate);
-    const interval = setInterval(loadDashboardData, 2000); // Poll for changes
+    // This event listener will trigger a reload if the roster is updated in another component (e.g., Admin page).
+    window.addEventListener('rosterUpdated', loadDashboardData);
+    
     return () => {
-      window.removeEventListener('rosterUpdated', handleRosterUpdate);
-      clearInterval(interval);
+      window.removeEventListener('rosterUpdated', loadDashboardData);
     };
   }, []);
   
@@ -125,8 +133,8 @@ export default function TeacherDashboardPage() {
             <CardContent className="space-y-4">
                 {roster.length > 0 ? roster.map(classGroup => (
                 <div key={classGroup.id} className="space-y-2">
-                    <div className="flex justify-between"><p>{classGroup.name}</p><p>{Math.floor(Math.random() * 20) + 78}%</p></div>
-                    <Progress value={Math.floor(Math.random() * 20) + 78} />
+                    <div className="flex justify-between"><p>{classGroup.name}</p><p>{classAverages[classGroup.id] || 0}%</p></div>
+                    <Progress value={classAverages[classGroup.id] || 0} />
                 </div>
                 )) : (
                     <p className="text-sm text-muted-foreground text-center py-4">No classes found. Add classes in the admin panel.</p>
@@ -134,13 +142,13 @@ export default function TeacherDashboardPage() {
             </CardContent>
         </Card>
 
-        <div className="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 md:col-span-2 lg:col-span-1">
+        <div className="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 md:col-span-2">
             <AttendanceCapture />
             <ManualAttendance />
         </div>
       </div>
 
-      <Card>
+      <Card className="lg:col-span-3">
           <CardHeader>
           <CardTitle className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
