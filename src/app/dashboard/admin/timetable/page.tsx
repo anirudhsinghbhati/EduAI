@@ -58,7 +58,12 @@ export default function TimetablePage() {
       setTimetable(savedTimetable ? JSON.parse(savedTimetable) : initialTimetable);
 
       const savedClasses = localStorage.getItem(LOCAL_STORAGE_STUDENT_KEY);
-      setClasses(savedClasses ? JSON.parse(savedClasses) : initialClassRoster);
+      const classData = savedClasses ? JSON.parse(savedClasses) : initialClassRoster;
+      setClasses(classData);
+      if (classData.length > 0) {
+        setSelectedClassId(classData[0].id);
+      }
+
 
       const savedTeachers = localStorage.getItem(LOCAL_STORAGE_TEACHER_KEY);
       setTeachers(savedTeachers ? JSON.parse(savedTeachers) : initialTeacherRoster);
@@ -67,6 +72,9 @@ export default function TimetablePage() {
       setTimetable(initialTimetable);
       setClasses(initialClassRoster);
       setTeachers(initialTeacherRoster);
+       if (initialClassRoster.length > 0) {
+        setSelectedClassId(initialClassRoster[0].id);
+      }
     }
   }, []);
   
@@ -290,7 +298,3 @@ export default function TimetablePage() {
     </Card>
   );
 }
-
-    
-
-    

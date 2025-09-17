@@ -6,13 +6,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentManagement } from "./components/student-management";
-import { StaffManagement } from "./components/teacher-management";
+import { StaffManagement } from "./components/staff-management";
 import { TimetableManager } from "./components/timetable-manager";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 import { teacherRoster as initialTeacherRoster, type Teacher } from "@/app/lib/teacher-roster";
 import { FeeManager } from "./components/fee-manager";
+import { CourseManagement } from "./components/course-management";
 
 const LOCAL_STORAGE_STUDENT_KEY = 'studentRoster';
 const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
@@ -118,7 +119,7 @@ export default function AdminDashboardPage() {
           <div className="lg:col-span-3 grid gap-6 grid-cols-1 md:grid-cols-2">
             <StudentManagement />
             <StaffManagement />
-            <TimetableManager />
+            <CourseManagement />
             <FeeManager />
           </div>
           <div className="lg:col-span-2">

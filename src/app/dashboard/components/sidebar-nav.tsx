@@ -4,7 +4,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck, CalendarDays, CreditCard, FileText, BarChart2, Briefcase } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -18,7 +18,7 @@ const navLinks = {
     { name: "Admin Dashboard", href: "/dashboard/admin", icon: Shield },
     { name: "Student Management", href: "/dashboard/admin/students", icon: Users },
     { name: "Staff Management", href: "/dashboard/admin/staff", icon: Briefcase },
-    { name: "Timetable", href: "/dashboard/admin/timetable", icon: CalendarDays },
+    { name: "Course Management", href: "/dashboard/admin/courses", icon: BookCopy },
     { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
   ],
 };
@@ -72,6 +72,9 @@ export function SidebarNav() {
              if (item.href === '/dashboard/admin/staff') {
               active = isSubActive('/dashboard/admin/staff');
             }
+            if (item.href === '/dashboard/admin/courses') {
+              active = isSubActive('/dashboard/admin/courses') || isSubActive('/dashboard/admin/timetable');
+            }
 
             // Student Management Sub-menu
             if (item.href === "/dashboard/admin/students") {
@@ -106,6 +109,26 @@ export function SidebarNav() {
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/records')}><Link href={createHref('/dashboard/admin/staff/records')}>Records</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/leave')}><Link href={createHref('/dashboard/admin/staff/leave')}>Leave</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/appraisals')}><Link href={createHref('/dashboard/admin/staff/appraisals')}>Appraisals</Link></SidebarMenuButton></SidebarMenuItem>
+                                </SidebarMenu>
+                            </div>
+                        )}
+                    </SidebarMenuItem>
+                )
+            }
+
+            // Course Management Sub-menu
+            if (item.href === "/dashboard/admin/courses") {
+                 return (
+                    <SidebarMenuItem key={item.name} className="flex flex-col items-start">
+                        <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
+                            <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
+                        </SidebarMenuButton>
+                        {active && (
+                            <div className="pl-6 pt-1 w-full">
+                                <SidebarMenu>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/courses/subjects')}><Link href={createHref('/dashboard/admin/courses/subjects')}>Subjects</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/courses/syllabus')}><Link href={createHref('/dashboard/admin/courses/syllabus')}>Syllabus</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/timetable')}><Link href={createHref('/dashboard/admin/timetable')}>Timetable</Link></SidebarMenuButton></SidebarMenuItem>
                                 </SidebarMenu>
                             </div>
                         )}
