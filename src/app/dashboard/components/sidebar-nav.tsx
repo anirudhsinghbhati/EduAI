@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -16,6 +16,7 @@ const navLinks = {
   admin: [
     { name: "Admin Dashboard", href: "/dashboard/admin", icon: Shield },
     { name: "Student Roster", href: "/dashboard/admin/roster", icon: Users },
+    { name: "Teacher Roster", href: "/dashboard/admin/teachers", icon: UserCheck },
   ],
 };
 

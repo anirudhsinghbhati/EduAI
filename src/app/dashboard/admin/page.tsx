@@ -5,11 +5,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
+import { TeacherRoster } from "./components/teacher-roster";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
+import { teacherRoster as initialTeacherRoster, type Teacher } from "@/app/lib/teacher-roster";
 
-const LOCAL_STORAGE_KEY = 'studentRoster';
+const LOCAL_STORAGE_STUDENT_KEY = 'studentRoster';
+const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
 
 // Helper function to create a stable but pseudo-random number from a string (e.g., date)
 const pseudoRandom = (seed: string) => {
@@ -25,46 +28,42 @@ const pseudoRandom = (seed: string) => {
 
 export default function AdminDashboardPage() {
   const [studentCount, setStudentCount] = useState(0);
-  const [classCount, setClassCount] = useState(0);
+  const [teacherCount, setTeacherCount] = useState(0);
   const [avgAttendance, setAvgAttendance] = useState(0);
-  const [activeTeachers, setActiveTeachers] = useState(0);
 
   const updateDashboardStats = () => {
       try {
-          const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-          const roster: ClassGroup[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
+          const savedStudentRoster = localStorage.getItem(LOCAL_STORAGE_STUDENT_KEY);
+          const studentRoster: ClassGroup[] = savedStudentRoster ? JSON.parse(savedStudentRoster) : initialRoster;
           
-          const totalStudents = roster.reduce((total, classGroup) => {
+          const totalStudents = studentRoster.reduce((total, classGroup) => {
               if (classGroup && Array.isArray(classGroup.students)) {
                   return total + classGroup.students.length;
               }
               return total;
           }, 0);
 
-          const totalClasses = roster.length;
+          const savedTeacherRoster = localStorage.getItem(LOCAL_STORAGE_TEACHER_KEY);
+          const teacherRoster: Teacher[] = savedTeacherRoster ? JSON.parse(savedTeacherRoster) : initialTeacherRoster;
+          const totalTeachers = teacherRoster.length;
 
           setStudentCount(totalStudents);
-          setClassCount(totalClasses);
+          setTeacherCount(totalTeachers);
 
           // Generate stable, dynamic mock data based on roster size
           const today = new Date().toISOString().slice(0, 10); // Seed for today's data
-          const seed = `${today}-${totalStudents}-${totalClasses}`;
+          const seed = `${today}-${totalStudents}-${totalTeachers}`;
           const randomNumber = pseudoRandom(seed);
           
           // Calculate dynamic but stable "Average Attendance"
           const attendance = 85 + (randomNumber % 11); // Stable attendance between 85-95%
           setAvgAttendance(attendance);
-          
-          // Calculate dynamic but stable "Active Teachers"
-          const teachers = totalClasses + Math.floor(totalClasses / 2) + (randomNumber % 5);
-          setActiveTeachers(teachers);
 
       } catch (error) {
           console.error("Failed to load or parse roster from localStorage", error);
           setStudentCount(0);
-          setClassCount(0);
+          setTeacherCount(0);
           setAvgAttendance(88); // Fallback
-          setActiveTeachers(5); // Fallback
       }
   };
 
@@ -76,12 +75,14 @@ export default function AdminDashboardPage() {
         updateDashboardStats();
     };
     window.addEventListener('rosterUpdated', handleRosterUpdate);
+    window.addEventListener('teacherRosterUpdated', handleRosterUpdate);
 
     // Also use an interval as a fallback to ensure sync if the event fails
     const interval = setInterval(updateDashboardStats, 2000);
 
     return () => {
         window.removeEventListener('rosterUpdated', handleRosterUpdate);
+        window.removeEventListener('teacherRosterUpdated', handleRosterUpdate);
         clearInterval(interval);
     };
   }, []);
@@ -89,7 +90,7 @@ export default function AdminDashboardPage() {
   const stats = [
     { title: "Total Students", value: studentCount.toString(), icon: Users },
     { title: "Average Attendance", value: `${avgAttendance}%`, icon: Activity },
-    { title: "Teachers Active", value: activeTeachers.toString(), icon: UserCheck },
+    { title: "Teachers Active", value: teacherCount.toString(), icon: UserCheck },
   ];
 
   return (
@@ -109,15 +110,18 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
             <StudentRoster />
+        </div>
+         <div className="lg:col-span-1">
+            <TeacherRoster />
         </div>
         <div className="lg:col-span-1">
             <SystemAnnouncements />
         </div>
       </div>
       <div>
-        <PlatformAnalytics studentCount={studentCount} teacherCount={activeTeachers} />
+        <PlatformAnalytics studentCount={studentCount} teacherCount={teacherCount} />
       </div>
     </div>
   );
