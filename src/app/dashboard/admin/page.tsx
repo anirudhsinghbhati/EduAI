@@ -12,8 +12,6 @@ import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 import { teacherRoster as initialTeacherRoster, type Teacher } from "@/app/lib/teacher-roster";
 import { FeeManager } from "./components/fee-manager";
-import { EnrollmentManager } from "./components/enrollment-manager";
-import { PerformanceReports } from "./components/performance-reports";
 
 const LOCAL_STORAGE_STUDENT_KEY = 'studentRoster';
 const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
@@ -120,9 +118,7 @@ export default function AdminDashboardPage() {
             <StudentManagement />
             <TeacherManagement />
             <TimetableManager />
-            <PerformanceReports />
             <FeeManager />
-            <EnrollmentManager />
           </div>
           <div className="lg:col-span-2">
             <SystemAnnouncements />
