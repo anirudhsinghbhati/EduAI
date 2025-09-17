@@ -108,7 +108,7 @@ export default function FeeManagementPage() {
               <TableRow>
                 <TableHead>Student Name</TableHead>
                 <TableHead>Class</TableHead>
-                <TableHead className="text-right">Amount (USD)</TableHead>
+                <TableHead className="text-right">Amount (INR)</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -121,7 +121,7 @@ export default function FeeManagementPage() {
                   <TableRow key={record.id}>
                     <TableCell className="font-medium">{record.studentName}</TableCell>
                     <TableCell>{record.className}</TableCell>
-                    <TableCell className="text-right">${record.amount.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">₹{record.amount.toLocaleString('en-IN')}</TableCell>
                     <TableCell>{format(new Date(record.dueDate), "MMM dd, yyyy")}</TableCell>
                     <TableCell className="text-center">
                        <Badge variant={config.variant}>

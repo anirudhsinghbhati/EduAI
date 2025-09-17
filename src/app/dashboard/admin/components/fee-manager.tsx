@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 
 export function FeeManager() {
   // In a real app, this data would be fetched and calculated from an API
-  const totalCollected = "18,500";
-  const totalOutstanding = "4,200";
+  const totalCollected = 1480000;
+  const totalOutstanding = 336000;
 
   return (
     <Card className="h-full flex flex-col">
@@ -23,12 +23,12 @@ export function FeeManager() {
       <CardContent className="flex-1 flex flex-col justify-between">
         <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                <span className="font-medium">Collected (USD)</span>
-                <span className="text-2xl font-bold text-green-600">${totalCollected}</span>
+                <span className="font-medium">Collected (INR)</span>
+                <span className="text-2xl font-bold text-green-600">₹{totalCollected.toLocaleString('en-IN')}</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                <span className="font-medium">Outstanding (USD)</span>
-                <span className="text-2xl font-bold text-amber-600">${totalOutstanding}</span>
+                <span className="font-medium">Outstanding (INR)</span>
+                <span className="text-2xl font-bold text-amber-600">₹{totalOutstanding.toLocaleString('en-IN')}</span>
             </div>
         </div>
         <Button asChild className="mt-4 w-full">
