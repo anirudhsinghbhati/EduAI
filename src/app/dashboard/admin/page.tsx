@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
-import { BarChart, Users, Activity } from "lucide-react";
+import { PlatformAnalytics } from "./components/platform-analytics";
+import { Users, Activity } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
@@ -43,10 +44,10 @@ export default function AdminDashboardPage() {
     };
 
     window.addEventListener('rosterUpdated', handleRosterUpdate);
-    
-    // A simple polling fallback to ensure the count updates if the event doesn't fire
-    const interval = setInterval(updateStudentCount, 1000);
 
+    // This is necessary because localStorage updates don't trigger re-renders across components automatically
+    // Polling is a simple way to keep the count in sync without complex state management
+    const interval = setInterval(updateStudentCount, 1500);
 
     return () => {
         window.removeEventListener('rosterUpdated', handleRosterUpdate);
@@ -76,9 +77,16 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <StudentRoster />
-        <SystemAnnouncements />
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+            <StudentRoster />
+        </div>
+        <div className="lg:col-span-1">
+            <SystemAnnouncements />
+        </div>
+      </div>
+      <div>
+        <PlatformAnalytics />
       </div>
     </div>
   );
