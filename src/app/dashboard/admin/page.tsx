@@ -13,6 +13,7 @@ import { teacherRoster as initialTeacherRoster, type Teacher } from "@/app/lib/t
 import { FeeManager } from "./components/fee-manager";
 import { CourseManagement } from "./components/course-management";
 import { EventsNotices } from "./components/events-notices";
+import { ReportsAnalytics } from "./components/reports-analytics";
 
 const LOCAL_STORAGE_STUDENT_KEY = 'studentRoster';
 const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
@@ -121,6 +122,7 @@ export default function AdminDashboardPage() {
             <CourseManagement />
             <FeeManager />
             <EventsNotices />
+            <ReportsAnalytics />
           </div>
           <div className="lg:col-span-2">
             <SystemAnnouncements />

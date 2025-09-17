@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone, AreaChart } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -20,6 +20,7 @@ const navLinks = {
     { name: "Course Management", href: "/dashboard/admin/courses", icon: BookCopy },
     { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
     { name: "Events & Notices", href: "/dashboard/admin/events", icon: Megaphone },
+    { name: "Reports & Analytics", href: "/dashboard/admin/reports", icon: AreaChart },
   ],
 };
 
@@ -77,6 +78,9 @@ export function SidebarNav() {
             }
             if (item.href === '/dashboard/admin/events') {
                 active = isSubActive('/dashboard/admin/events');
+            }
+            if (item.href === '/dashboard/admin/reports') {
+                active = isSubActive('/dashboard/admin/reports');
             }
 
 
@@ -153,6 +157,27 @@ export function SidebarNav() {
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/calendar')}><Link href={createHref('/dashboard/admin/events/calendar')}>Calendar</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/notices')}><Link href={createHref('/dashboard/admin/events/notices')}>Notices</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/manage')}><Link href={createHref('/dashboard/admin/events/manage')}>Manage Events</Link></SidebarMenuButton></SidebarMenuItem>
+                                </SidebarMenu>
+                            </div>
+                        )}
+                    </SidebarMenuItem>
+                )
+            }
+
+            // Reports & Analytics Sub-menu
+            if (item.href === "/dashboard/admin/reports") {
+                 return (
+                    <SidebarMenuItem key={item.name} className="flex flex-col items-start">
+                        <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
+                            <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
+                        </SidebarMenuButton>
+                        {active && (
+                            <div className="pl-6 pt-1 w-full">
+                                <SidebarMenu>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/reports/attendance')}><Link href={createHref('/dashboard/admin/reports/attendance')}>Attendance</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/reports/performance')}><Link href={createHref('/dashboard/admin/reports/performance')}>Performance</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/reports/enrollment')}><Link href={createHref('/dashboard/admin/reports/enrollment')}>Enrollment</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/reports/financial')}><Link href={createHref('/dashboard/admin/reports/financial')}>Financial</Link></SidebarMenuButton></SidebarMenuItem>
                                 </SidebarMenu>
                             </div>
                         )}
