@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone, AreaChart } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone, AreaChart, HeartHandshake, User, BarChart3 } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -22,9 +22,15 @@ const navLinks = {
     { name: "Events & Notices", href: "/dashboard/admin/events", icon: Megaphone },
     { name: "Reports & Analytics", href: "/dashboard/admin/reports", icon: AreaChart },
   ],
+  parent: [
+    { name: "Parent Dashboard", href: "/dashboard/parent", icon: User },
+  ],
+  counselor: [
+      { name: "Counselor Dashboard", href: "/dashboard/counselor", icon: HeartHandshake },
+  ],
 };
 
-type Role = 'student' | 'teacher' | 'admin';
+type Role = 'student' | 'teacher' | 'admin' | 'parent' | 'counselor';
 
 export function SidebarNav() {
   const searchParams = useSearchParams();
@@ -36,6 +42,8 @@ export function SidebarNav() {
     if (pathname.startsWith('/dashboard/teacher')) return 'teacher';
     if (pathname.startsWith('/dashboard/admin')) return 'admin';
     if (pathname.startsWith('/dashboard/student')) return 'student';
+    if (pathname.startsWith('/dashboard/parent')) return 'parent';
+    if (pathname.startsWith('/dashboard/counselor')) return 'counselor';
     return 'student'; // Default fallback
   };
 

@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +46,10 @@ export default function LoginPage() {
                 <Link href="/dashboard?role=admin">Admin</Link>
              </Button>
              <Button asChild>
-                <Link href="/dashboard">Other</Link>
+                <Link href="/dashboard?role=parent">Parent</Link>
+             </Button>
+             <Button asChild>
+                <Link href="/dashboard?role=counselor">Counselor</Link>
              </Button>
         </div>
         <div className="text-center text-sm text-muted-foreground mt-4">

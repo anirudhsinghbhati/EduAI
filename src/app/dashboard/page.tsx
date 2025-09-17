@@ -2,7 +2,6 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import StudentDashboardPage from './student/page';
 
 export default function DashboardRedirectPage() {
   const searchParams = useSearchParams();
@@ -22,6 +21,10 @@ export default function DashboardRedirectPage() {
         router.replace(`/dashboard/teacher?${newParams.toString()}`);
     } else if (role === 'admin') {
         router.replace(`/dashboard/admin?${newParams.toString()}`);
+    } else if (role === 'parent') {
+        router.replace(`/dashboard/parent?${newParams.toString()}`);
+    } else if (role === 'counselor') {
+        router.replace(`/dashboard/counselor?${newParams.toString()}`);
     } else {
         // Fallback to student dashboard if role is unknown
         router.replace(`/dashboard/student?${newParams.toString()}`);
