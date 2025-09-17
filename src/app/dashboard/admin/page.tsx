@@ -111,16 +111,16 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Middle Row: Management Cards */}
-      <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 grid gap-6 grid-cols-1 md:grid-cols-2">
-            <StudentRoster />
-            <TeacherRoster />
+      {/* Middle Row: Management Cards & Announcements */}
+      <div className="grid gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3 grid gap-6 grid-cols-1 md:grid-cols-2">
             <div className="md:col-span-2">
-                <TimetableManager />
+                <StudentRoster />
             </div>
+            <TeacherRoster />
+            <TimetableManager />
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <SystemAnnouncements />
           </div>
       </div>
