@@ -4,16 +4,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
-import { StudentManagement } from "./components/student-management";
-import { StaffManagement } from "./components/staff-management";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 import { teacherRoster as initialTeacherRoster, type Teacher } from "@/app/lib/teacher-roster";
-import { FeeManager } from "./components/fee-manager";
-import { CourseManagement } from "./components/course-management";
-import { EventsNotices } from "./components/events-notices";
-import { ReportsAnalytics } from "./components/reports-analytics";
 
 const LOCAL_STORAGE_STUDENT_KEY = 'studentRoster';
 const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
@@ -99,39 +93,34 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Top Row: Quick Stats */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column: Stats & Analytics */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Top Row: Quick Stats */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {stats.map((stat) => (
+              <Card key={stat.title}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                  <stat.icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stat.value}</div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          {/* Bottom Row: Analytics */}
+          <div>
+            <PlatformAnalytics studentCount={studentCount} teacherCount={teacherCount} />
+          </div>
+        </div>
 
-      {/* Middle Row: Management Cards & Announcements */}
-      <div className="grid gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3 grid gap-6 grid-cols-1 md:grid-cols-2">
-            <StudentManagement />
-            <StaffManagement />
-            <CourseManagement />
-            <FeeManager />
-            <EventsNotices />
-            <ReportsAnalytics />
-          </div>
-          <div className="lg:col-span-2">
-            <SystemAnnouncements />
-          </div>
-      </div>
-      
-      {/* Bottom Row: Analytics */}
-      <div>
-        <PlatformAnalytics studentCount={studentCount} teacherCount={teacherCount} />
+        {/* Right Column: Announcements */}
+        <div className="lg:col-span-1">
+          <SystemAnnouncements />
+        </div>
       </div>
     </div>
   );
