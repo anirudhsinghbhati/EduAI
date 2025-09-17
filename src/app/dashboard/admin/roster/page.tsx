@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
 
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
@@ -256,10 +257,10 @@ export default function RosterPage() {
             ))}
             </Accordion>
         </ScrollArea>
-        <div className="pt-4 border-t">
-            <h4 className="font-medium flex items-center gap-2 mb-4"><UserPlus className="w-4 h-4" /> Add New Student</h4>
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div className="grid gap-2">
+        <div className="pt-4 border-t space-y-4">
+             <div>
+                <h4 className="font-medium flex items-center gap-2 mb-4"><FolderPlus className="w-4 h-4" /> Add New Class</h4>
+                 <div className="grid gap-2">
                     <Label htmlFor="new-class-name">New Class Name</Label>
                     <div className="flex gap-2">
                     <Input
@@ -273,48 +274,52 @@ export default function RosterPage() {
                     </Button>
                     </div>
                 </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="class-select">Select Class</Label>
-                    <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                        <SelectTrigger id="class-select">
-                            <SelectValue placeholder="Choose a class..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {roster.map((classGroup) => (
-                                <SelectItem key={classGroup.id} value={classGroup.id}>
-                                    {classGroup.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
             </div>
-            <form onSubmit={handleAddStudent} className="space-y-4">
-                <div className="grid gap-2">
-                    <Label htmlFor="student-name">Student Name</Label>
-                    <Input
-                    id="student-name"
-                    value={newStudentName}
-                    onChange={(e) => setNewStudentName(e.target.value)}
-                    placeholder="e.g., Jane Doe"
-                    required
-                    />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="student-photo">Student Photo</Label>
-                    <Input
-                    id="student-photo"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
-                    required
-                    />
-                </div>
-                <Button type="submit" className="w-full">
-                    <UploadCloud className="mr-2" />
-                    Add to Roster
-                </Button>
-            </form>
+            <Separator />
+            <div>
+                <h4 className="font-medium flex items-center gap-2 mb-4"><UserPlus className="w-4 h-4" /> Add New Student</h4>
+                <form onSubmit={handleAddStudent} className="space-y-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="class-select">Select Class</Label>
+                        <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                            <SelectTrigger id="class-select">
+                                <SelectValue placeholder="Choose a class..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roster.map((classGroup) => (
+                                    <SelectItem key={classGroup.id} value={classGroup.id}>
+                                        {classGroup.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="student-name">Student Name</Label>
+                        <Input
+                        id="student-name"
+                        value={newStudentName}
+                        onChange={(e) => setNewStudentName(e.target.value)}
+                        placeholder="e.g., Jane Doe"
+                        required
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="student-photo">Student Photo</Label>
+                        <Input
+                        id="student-photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
+                        required
+                        />
+                    </div>
+                    <Button type="submit" className="w-full">
+                        <UploadCloud className="mr-2" />
+                        Add to Roster
+                    </Button>
+                </form>
+            </div>
         </div>
       </CardContent>
     </Card>
