@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX, Mail, Phone, UserCircle, Edit } from "lucide-react";
+import { studentRoster as initialRoster, type Student, type ClassGroup, type StudentDocument } from "@/app/lib/student-roster";
+import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX, Mail, Phone, UserCircle, Edit, FileText, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,6 +48,9 @@ export default function RosterPage() {
   const [updatedStudentName, setUpdatedStudentName] = useState("");
   const [updatedStudentFile, setUpdatedStudentFile] = useState<File | null>(null);
   const [updatedStudentClassId, setUpdatedStudentClassId] = useState("");
+
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [uploadingToStudent, setUploadingToStudent] = useState<Student | null>(null);
   
   const { toast } = useToast();
 
@@ -110,7 +113,8 @@ export default function RosterPage() {
                 emergencyContact: {
                   name: `Guardian of ${newStudentName.trim()}`,
                   phone: '000-000-0000',
-                }
+                },
+                documents: [],
             };
 
             const updatedRoster = roster.map(classGroup => {
@@ -254,6 +258,46 @@ export default function RosterPage() {
     }
   };
 
+  const handleDocumentUpload = (studentId: string) => {
+    if (!documentFile) {
+        toast({ variant: "destructive", title: "No file selected" });
+        return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        const newDocument: StudentDocument = {
+            id: `doc${Date.now()}`,
+            name: documentFile.name,
+            url: reader.result as string,
+            type: documentFile.type,
+        };
+
+        const updatedRoster = roster.map(cg => ({
+            ...cg,
+            students: cg.students.map(s => {
+                if (s.id === studentId) {
+                    return { ...s, documents: [...(s.documents || []), newDocument] };
+                }
+                return s;
+            }),
+        }));
+        setRoster(updatedRoster);
+        toast({ title: "✅ Document Uploaded", description: `${newDocument.name} added to student profile.` });
+        setDocumentFile(null);
+        if (uploadingToStudent) {
+            const updatedStudent = updatedRoster.flatMap(cg => cg.students).find(s => s.id === studentId);
+            if (updatedStudent) {
+                setUploadingToStudent(updatedStudent);
+            }
+        }
+    };
+    reader.readAsDataURL(documentFile);
+  };
+
+  const openStudentDialog = (student: Student) => {
+    setUploadingToStudent(student);
+  };
+
 
   return (
     <div className="grid lg:grid-cols-3 gap-8 items-start">
@@ -310,7 +354,7 @@ export default function RosterPage() {
                             <AccordionContent>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
                                 {(classGroup.students || []).map((student) => (
-                                <Dialog key={student.id}>
+                                <Dialog key={student.id} onOpenChange={(open) => open && openStudentDialog(student)}>
                                     <div className="text-center relative pt-2 group">
                                          <DialogTrigger asChild>
                                             <div className="cursor-pointer">
@@ -391,6 +435,34 @@ export default function RosterPage() {
                                                     </div>
                                                 </>
                                             )}
+                                            <div className="space-y-2 pt-2">
+                                                <h4 className="font-semibold border-b pb-1">Documents</h4>
+                                                <div className="space-y-2">
+                                                    {(uploadingToStudent?.documents || []).length > 0 ? (
+                                                        (uploadingToStudent?.documents || []).map(doc => (
+                                                            <div key={doc.id} className="flex items-center justify-between p-2 bg-muted rounded-md">
+                                                                <div className="flex items-center gap-2">
+                                                                    <FileText className="w-4 h-4" />
+                                                                    <span className="text-sm font-medium truncate">{doc.name}</span>
+                                                                </div>
+                                                                <a href={doc.url} download={doc.name}>
+                                                                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                                                                        <Download className="w-4 h-4" />
+                                                                    </Button>
+                                                                </a>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <p className="text-sm text-muted-foreground text-center py-2">No documents uploaded.</p>
+                                                    )}
+                                                </div>
+                                                <div className="flex gap-2 pt-2">
+                                                    <Input type="file" onChange={(e) => setDocumentFile(e.target.files?.[0] || null)} className="flex-1" />
+                                                    <Button onClick={() => handleDocumentUpload(student.id)} disabled={!documentFile}>
+                                                        <UploadCloud className="w-4 h-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </DialogContent>
                                 </Dialog>
