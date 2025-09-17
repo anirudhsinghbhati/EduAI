@@ -3,8 +3,9 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone, AreaChart, HeartHandshake, User, BarChart3 } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone, AreaChart, HeartHandshake, User, BarChart3, Eye } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
+import { Separator } from "@/components/ui/separator";
 
 const navLinks = {
   student: [
@@ -21,6 +22,11 @@ const navLinks = {
     { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
     { name: "Events & Notices", href: "/dashboard/admin/events", icon: Megaphone },
     { name: "Reports & Analytics", href: "/dashboard/admin/reports", icon: AreaChart },
+    { isSeparator: true },
+    { name: "View as Student", href: "/dashboard/student", icon: Eye },
+    { name: "View as Teacher", href: "/dashboard/teacher", icon: Eye },
+    { name: "View as Parent", href: "/dashboard/parent", icon: Eye },
+    { name: "View as Counselor", href: "/dashboard/counselor", icon: Eye },
   ],
   parent: [
     { name: "Parent Dashboard", href: "/dashboard/parent", icon: User },
@@ -54,8 +60,15 @@ export function SidebarNav() {
   
   const createHref = (href: string) => {
     const params = new URLSearchParams(searchParams);
-    if (!params.has('role') || params.get('role') !== role) {
-      params.set('role', role);
+    
+    // When admin is viewing other dashboards, we keep the 'role=admin'
+    // but for other roles, we ensure their role is set.
+    if (role === 'admin' && !params.has('role')) {
+        params.set('role', 'admin');
+    } else if (role !== 'admin') {
+       if (!params.has('role') || params.get('role') !== role) {
+        params.set('role', role);
+       }
     }
     return `${href}?${params.toString()}`;
   }
@@ -73,7 +86,14 @@ export function SidebarNav() {
       <SidebarContent className="p-2">
         <p className="px-2 py-1 text-xs text-muted-foreground">{currentRoleName}</p>
         <SidebarMenu>
-          {currentNav.map((item) => {
+          {currentNav.map((item, index) => {
+            if ('isSeparator' in item) {
+              return (
+                <div key={`sep-${index}`} className="px-2">
+                  <p className="px-2 py-1 text-xs text-muted-foreground">View Dashboards</p>
+                </div>
+              )
+            }
             let active = pathname === item.href;
             if (item.href === '/dashboard/admin/students') {
               active = isSubActive('/dashboard/admin/students') || isSubActive('/dashboard/admin/roster') || isSubActive('/dashboard/admin/enrollment') || isSubActive('/dashboard/admin/performance');
