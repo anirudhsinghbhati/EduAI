@@ -24,8 +24,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Separator } from "@/components/ui/separator";
-
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
@@ -165,163 +163,180 @@ export default function RosterPage() {
 
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-primary" />
-          Student Roster Management
-        </CardTitle>
-        <CardDescription>Manage student profiles and photos for AI attendance.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 flex flex-col">
-        <ScrollArea className="flex-1 -mr-4 pr-4 mb-4">
-            <Accordion type="multiple" className="w-full" defaultValue={roster.map(c => c.id)}>
-            {roster.map((classGroup) => (
-                <AccordionItem key={classGroup.id} value={classGroup.id}>
-                    <div className="flex items-center w-full">
-                        <AccordionTrigger className="flex-1">
-                            {classGroup.name} ({(classGroup.students || []).length} students)
-                        </AccordionTrigger>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 ml-2"
-                                    aria-label={`Delete class ${classGroup.name}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <FolderX className="w-4 h-4 text-destructive" />
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Class: {classGroup.name}?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                This action cannot be undone. This will permanently remove the class and all students within it.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDeleteClass(classGroup.id)}>
-                                Continue
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                    <AccordionContent>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
-                        {(classGroup.students || []).map((student) => (
-                        <div key={student.id} className="text-center group relative">
-                            <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
-                                <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
+    <div className="grid lg:grid-cols-3 gap-8 items-start">
+        {/* Main Content: Roster Display */}
+        <Card className="lg:col-span-2 h-full">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Student Roster
+                </CardTitle>
+                <CardDescription>Manage classes and student profiles for AI attendance.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ScrollArea className="h-[calc(100vh-20rem)] -mr-4 pr-4">
+                    <Accordion type="multiple" className="w-full" defaultValue={roster.map(c => c.id)}>
+                    {roster.map((classGroup) => (
+                        <AccordionItem key={classGroup.id} value={classGroup.id}>
+                            <div className="flex items-center w-full">
+                                <AccordionTrigger className="flex-1 text-left">
+                                    {classGroup.name} 
+                                    <span className="text-muted-foreground font-normal ml-2">({(classGroup.students || []).length} students)</span>
+                                </AccordionTrigger>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
                                         <Button
-                                            variant="destructive"
+                                            variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8"
-                                            aria-label={`Delete ${student.name}`}
+                                            className="h-8 w-8 ml-2"
+                                            aria-label={`Delete class ${classGroup.name}`}
+                                            onClick={(e) => e.stopPropagation()}
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <FolderX className="w-4 h-4 text-destructive" />
                                         </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently remove {student.name} from the roster.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                          <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
-                                            Continue
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                </div>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Class: {classGroup.name}?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently remove the class and all students within it.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDeleteClass(classGroup.id)}>
+                                        Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
-                            <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
-                        </div>
-                        ))}
-                         {(classGroup.students || []).length === 0 && (
-                            <p className="col-span-full text-center text-sm text-muted-foreground py-4">No students in this class yet.</p>
-                        )}
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
-            ))}
-            </Accordion>
-        </ScrollArea>
-        <div className="pt-4 border-t space-y-4">
-             <div>
-                <h4 className="font-medium flex items-center gap-2 mb-4"><FolderPlus className="w-4 h-4" /> Add New Class</h4>
-                 <div className="grid gap-2">
-                    <Label htmlFor="new-class-name">New Class Name</Label>
-                    <div className="flex gap-2">
-                    <Input
-                        id="new-class-name"
-                        value={newClassName}
-                        onChange={(e) => setNewClassName(e.target.value)}
-                        placeholder="e.g., Grade 9 History"
-                    />
-                    <Button onClick={handleAddNewClass} size="icon" aria-label="Add new class">
-                        <FolderPlus className="w-4 h-4" />
-                    </Button>
-                    </div>
-                </div>
-            </div>
-            <Separator />
-            <div>
-                <h4 className="font-medium flex items-center gap-2 mb-4"><UserPlus className="w-4 h-4" /> Add New Student</h4>
-                <form onSubmit={handleAddStudent} className="space-y-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="class-select">Select Class</Label>
-                        <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                            <SelectTrigger id="class-select">
-                                <SelectValue placeholder="Choose a class..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {roster.map((classGroup) => (
-                                    <SelectItem key={classGroup.id} value={classGroup.id}>
-                                        {classGroup.name}
-                                    </SelectItem>
+                            <AccordionContent>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
+                                {(classGroup.students || []).map((student) => (
+                                <div key={student.id} className="text-center group relative">
+                                    <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
+                                        <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    aria-label={`Delete ${student.name}`}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently remove {student.name} from the roster.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
+                                                    Continue
+                                                </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
+                                </div>
                                 ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                                {(classGroup.students || []).length === 0 && (
+                                    <p className="col-span-full text-center text-sm text-muted-foreground py-4">No students in this class yet.</p>
+                                )}
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                     {roster.length === 0 && (
+                        <p className="col-span-full text-center text-sm text-muted-foreground py-10">No classes have been created yet.</p>
+                    )}
+                    </Accordion>
+                </ScrollArea>
+            </CardContent>
+        </Card>
+        
+        {/* Sidebar: Action Forms */}
+        <div className="lg:col-span-1 space-y-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><FolderPlus className="w-5 h-5" /> Add New Class</CardTitle>
+                </CardHeader>
+                <CardContent>
                     <div className="grid gap-2">
-                        <Label htmlFor="student-name">Student Name</Label>
+                        <Label htmlFor="new-class-name">New Class Name</Label>
+                        <div className="flex gap-2">
                         <Input
-                        id="student-name"
-                        value={newStudentName}
-                        onChange={(e) => setNewStudentName(e.target.value)}
-                        placeholder="e.g., Jane Doe"
-                        required
+                            id="new-class-name"
+                            value={newClassName}
+                            onChange={(e) => setNewClassName(e.target.value)}
+                            placeholder="e.g., Grade 9 History"
                         />
+                        <Button onClick={handleAddNewClass} size="icon" aria-label="Add new class">
+                            <FolderPlus className="w-4 h-4" />
+                        </Button>
+                        </div>
                     </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="student-photo">Student Photo</Label>
-                        <Input
-                        id="student-photo"
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
-                        required
-                        />
-                    </div>
-                    <Button type="submit" className="w-full">
-                        <UploadCloud className="mr-2" />
-                        Add to Roster
-                    </Button>
-                </form>
-            </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><UserPlus className="w-5 h-5" /> Add New Student</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleAddStudent} className="space-y-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="class-select">Select Class</Label>
+                            <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                                <SelectTrigger id="class-select">
+                                    <SelectValue placeholder="Choose a class..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {roster.map((classGroup) => (
+                                        <SelectItem key={classGroup.id} value={classGroup.id}>
+                                            {classGroup.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="student-name">Student Name</Label>
+                            <Input
+                            id="student-name"
+                            value={newStudentName}
+                            onChange={(e) => setNewStudentName(e.target.value)}
+                            placeholder="e.g., Jane Doe"
+                            required
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="student-photo">Student Photo</Label>
+                            <Input
+                            id="student-photo"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setNewStudentFile(e.target.files?.[0] || null)}
+                            required
+                            />
+                        </div>
+                        <Button type="submit" className="w-full">
+                            <UploadCloud className="mr-2" />
+                            Add to Roster
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
