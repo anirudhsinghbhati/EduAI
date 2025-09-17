@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
 import { PlatformAnalytics } from "./components/platform-analytics";
