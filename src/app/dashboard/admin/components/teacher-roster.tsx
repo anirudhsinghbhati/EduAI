@@ -20,7 +20,7 @@ export function TeacherRoster() {
             const roster: Teacher[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
             setTeacherCount(roster.length);
         } catch (error) {
-            console.error("Failed to load teacher roster from localStorage", error);
+            console.error("Failed to load teacher data from localStorage", error);
             setTeacherCount(initialRoster.length);
         }
     };
@@ -42,7 +42,7 @@ export function TeacherRoster() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserCheck className="w-5 h-5 text-primary" />
-          Teacher Roster
+          Teacher Management
         </CardTitle>
         <CardDescription>Manage teacher profiles and subjects.</CardDescription>
       </CardHeader>
@@ -55,7 +55,7 @@ export function TeacherRoster() {
         </div>
         <Button asChild className="mt-4 w-full">
           <Link href="/dashboard/admin/teachers">
-            Manage Roster
+            Manage Teachers
             <ArrowRight className="ml-2" />
           </Link>
         </Button>

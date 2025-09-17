@@ -44,7 +44,7 @@ export default function RosterPage() {
         setRoster(initialRoster);
       }
     } catch (error) {
-        console.error("Failed to load roster from localStorage", error);
+        console.error("Failed to load student data from localStorage", error);
         setRoster(initialRoster);
     }
   }, []);
@@ -56,7 +56,7 @@ export default function RosterPage() {
             // Dispatch event to notify other components of the update
             window.dispatchEvent(new CustomEvent('rosterUpdated'));
         } catch (error) {
-            console.error("Failed to save roster to localStorage", error);
+            console.error("Failed to save student data to localStorage", error);
         }
     }
   }, [roster]);
@@ -143,7 +143,7 @@ export default function RosterPage() {
         toast({
             variant: "destructive",
             title: "🗑️ Student Removed",
-            description: `${studentName} has been removed from the roster.`,
+            description: `${studentName} has been removed from the student records.`,
         });
     }
   };
@@ -169,7 +169,7 @@ export default function RosterPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
-                Student Roster
+                Student Records
                 </CardTitle>
                 <CardDescription>Manage classes and student profiles for AI attendance.</CardDescription>
             </CardHeader>
@@ -237,7 +237,7 @@ export default function RosterPage() {
                                         <AlertDialogHeader>
                                           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                           <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently remove {student.name} from the roster.
+                                            This action cannot be undone. This will permanently remove {student.name} from the student records.
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -335,7 +335,7 @@ export default function RosterPage() {
                         </div>
                         <Button type="submit" className="w-full">
                             <UploadCloud className="mr-2" />
-                            Add to Roster
+                            Add Student
                         </Button>
                     </form>
                 </CardContent>

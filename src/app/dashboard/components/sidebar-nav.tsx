@@ -15,8 +15,8 @@ const navLinks = {
   ],
   admin: [
     { name: "Admin Dashboard", href: "/dashboard/admin", icon: Shield },
-    { name: "Student Roster", href: "/dashboard/admin/roster", icon: Users },
-    { name: "Teacher Roster", href: "/dashboard/admin/teachers", icon: UserCheck },
+    { name: "Student Management", href: "/dashboard/admin/roster", icon: Users },
+    { name: "Teacher Management", href: "/dashboard/admin/teachers", icon: UserCheck },
     { name: "Timetable", href: "/dashboard/admin/timetable", icon: CalendarDays },
   ],
 };

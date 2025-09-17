@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
           setAvgAttendance(attendance);
 
       } catch (error) {
-          console.error("Failed to load or parse roster from localStorage", error);
+          console.error("Failed to load or parse data from localStorage", error);
           setStudentCount(0);
           setTeacherCount(0);
           setAvgAttendance(88); // Fallback

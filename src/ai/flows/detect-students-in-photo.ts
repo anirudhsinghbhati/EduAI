@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent that detects which students are present in a classroom photo.
@@ -51,16 +52,16 @@ const prompt = ai.definePrompt({
   name: 'detectStudentsPrompt',
   input: {schema: DetectStudentsInputSchema},
   output: {schema: DetectStudentsOutputSchema},
-  prompt: `You are an expert AI in facial recognition. You will be given a main classroom photo and a roster of students with their individual photos.
+  prompt: `You are an expert AI in facial recognition. You will be given a main classroom photo and a list of students with their individual photos.
 
-Your task is to carefully compare each student's photo from the roster with the faces visible in the classroom photo.
+Your task is to carefully compare each student's photo from the list with the faces visible in the classroom photo.
 
 Based on your analysis, identify all the students who are present in the classroom photo and return a list of their IDs in the 'presentStudentIds' field.
 
 Classroom Photo:
 {{media url=classPhotoDataUri}}
 
-Student Roster:
+Student List:
 {{#each studentRoster}}
 - Student ID: {{{id}}}, Name: {{{name}}}
   Photo: {{media url=photoDataUri}}

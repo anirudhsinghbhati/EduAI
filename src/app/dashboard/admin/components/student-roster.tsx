@@ -26,7 +26,7 @@ export function StudentRoster() {
             setStudentCount(totalStudents);
             setClassCount(totalClasses);
         } catch (error) {
-            console.error("Failed to load roster from localStorage", error);
+            console.error("Failed to load student data from localStorage", error);
             setStudentCount(initialRoster.reduce((total, classGroup) => total + (classGroup.students?.length || 0), 0));
             setClassCount(initialRoster.length);
         }
@@ -49,7 +49,7 @@ export function StudentRoster() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="w-5 h-5 text-primary" />
-          Student Roster
+          Student Management
         </CardTitle>
         <CardDescription>Manage student profiles and class groups.</CardDescription>
       </CardHeader>
@@ -66,7 +66,7 @@ export function StudentRoster() {
         </div>
         <Button asChild className="mt-4 w-full">
           <Link href="/dashboard/admin/roster">
-            Manage Roster
+            Manage Students
             <ArrowRight className="ml-2" />
           </Link>
         </Button>

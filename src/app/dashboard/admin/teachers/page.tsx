@@ -41,7 +41,7 @@ export default function TeacherRosterPage() {
         setRoster(initialRoster);
       }
     } catch (error) {
-        console.error("Failed to load teacher roster from localStorage", error);
+        console.error("Failed to load teacher data from localStorage", error);
         setRoster(initialRoster);
     }
   }, []);
@@ -53,7 +53,7 @@ export default function TeacherRosterPage() {
             // Dispatch event to notify other components of the update
             window.dispatchEvent(new CustomEvent('teacherRosterUpdated'));
         } catch (error) {
-            console.error("Failed to save teacher roster to localStorage", error);
+            console.error("Failed to save teacher data to localStorage", error);
         }
     }
   }, [roster]);
@@ -78,7 +78,7 @@ export default function TeacherRosterPage() {
 
             toast({
                 title: "✅ Teacher Added",
-                description: `${newTeacher.name} has been added to the roster.`,
+                description: `${newTeacher.name} has been added to the teacher list.`,
             });
         };
         reader.readAsDataURL(newTeacherFile);
@@ -104,7 +104,7 @@ export default function TeacherRosterPage() {
         toast({
             variant: "destructive",
             title: "🗑️ Teacher Removed",
-            description: `${teacherName} has been removed from the roster.`,
+            description: `${teacherName} has been removed from the records.`,
         });
     }
   };
@@ -115,7 +115,7 @@ export default function TeacherRosterPage() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserCheck className="w-5 h-5 text-primary" />
-          Teacher Roster Management
+          Teacher Management
         </CardTitle>
         <CardDescription>Manage teacher profiles and contact information.</CardDescription>
       </CardHeader>
@@ -144,7 +144,7 @@ export default function TeacherRosterPage() {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                            This action cannot be undone. This will permanently remove {teacher.name} from the roster.
+                            This action cannot be undone. This will permanently remove {teacher.name} from the records.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -161,7 +161,7 @@ export default function TeacherRosterPage() {
                 </div>
             ))}
             {roster.length === 0 && (
-                <p className="col-span-full text-center text-sm text-muted-foreground py-4">No teachers on the roster yet.</p>
+                <p className="col-span-full text-center text-sm text-muted-foreground py-4">No teachers in the records yet.</p>
             )}
             </div>
         </ScrollArea>
@@ -202,7 +202,7 @@ export default function TeacherRosterPage() {
                 </div>
                 <Button type="submit" className="w-full">
                     <UploadCloud className="mr-2" />
-                    Add Teacher to Roster
+                    Add Teacher
                 </Button>
             </form>
         </div>
