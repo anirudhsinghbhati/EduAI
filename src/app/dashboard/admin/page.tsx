@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { PlatformAnalytics } from "./components/platform-analytics";
@@ -86,9 +87,9 @@ export default function AdminDashboardPage() {
   }, []);
 
   const stats = [
-    { title: "Total Students", value: studentCount.toString(), icon: Users },
+    { title: "Total Students", value: studentCount.toString(), icon: Users, href: "/dashboard/admin/students" },
     { title: "Average Attendance", value: `${avgAttendance}%`, icon: Activity },
-    { title: "Total Staff", value: teacherCount.toString(), icon: UserCheck },
+    { title: "Total Staff", value: teacherCount.toString(), icon: UserCheck, href: "/dashboard/admin/staff" },
   ];
 
   return (
@@ -98,17 +99,32 @@ export default function AdminDashboardPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Top Row: Quick Stats */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {stats.map((stat) => (
-              <Card key={stat.title}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                  <stat.icon className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                </CardContent>
-              </Card>
-            ))}
+            {stats.map((stat) => {
+              const cardContent = (
+                <Card className="h-full transition-colors hover:bg-muted/50">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                    <stat.icon className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stat.value}</div>
+                  </CardContent>
+                </Card>
+              );
+
+              if (stat.href) {
+                return (
+                  <Link href={stat.href} key={stat.title}>
+                    {cardContent}
+                  </Link>
+                );
+              }
+              return (
+                <div key={stat.title}>
+                  {cardContent}
+                </div>
+              );
+            })}
           </div>
           
           {/* Bottom Row: Analytics */}
