@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserCheck, ArrowRight } from "lucide-react";
+import { Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function StaffManagement() {
@@ -12,7 +12,7 @@ export function StaffManagement() {
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <UserCheck className="w-5 h-5 text-primary" />
+          <Briefcase className="w-5 h-5 text-primary" />
           Staff Management
         </CardTitle>
       </CardHeader>

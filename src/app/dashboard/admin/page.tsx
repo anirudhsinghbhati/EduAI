@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentManagement } from "./components/student-management";
-import { StaffManagement } from "./components/staff-management";
+import { StaffManagement } from "./components/teacher-management";
 import { TimetableManager } from "./components/timetable-manager";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
