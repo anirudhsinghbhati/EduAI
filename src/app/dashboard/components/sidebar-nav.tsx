@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, Briefcase, CreditCard, BookCopy, CalendarDays, Megaphone } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -19,6 +19,7 @@ const navLinks = {
     { name: "Staff Management", href: "/dashboard/admin/staff", icon: Briefcase },
     { name: "Course Management", href: "/dashboard/admin/courses", icon: BookCopy },
     { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
+    { name: "Events & Notices", href: "/dashboard/admin/events", icon: Megaphone },
   ],
 };
 
@@ -74,6 +75,10 @@ export function SidebarNav() {
             if (item.href === '/dashboard/admin/courses') {
               active = isSubActive('/dashboard/admin/courses') || isSubActive('/dashboard/admin/timetable');
             }
+            if (item.href === '/dashboard/admin/events') {
+                active = isSubActive('/dashboard/admin/events');
+            }
+
 
             // Student Management Sub-menu
             if (item.href === "/dashboard/admin/students") {
@@ -128,6 +133,26 @@ export function SidebarNav() {
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/courses/subjects')}><Link href={createHref('/dashboard/admin/courses/subjects')}>Subjects</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/courses/syllabus')}><Link href={createHref('/dashboard/admin/courses/syllabus')}>Syllabus</Link></SidebarMenuButton></SidebarMenuItem>
                                     <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/timetable')}><Link href={createHref('/dashboard/admin/timetable')}>Timetable</Link></SidebarMenuButton></SidebarMenuItem>
+                                </SidebarMenu>
+                            </div>
+                        )}
+                    </SidebarMenuItem>
+                )
+            }
+
+            // Events & Notices Sub-menu
+            if (item.href === "/dashboard/admin/events") {
+                 return (
+                    <SidebarMenuItem key={item.name} className="flex flex-col items-start">
+                        <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
+                            <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
+                        </SidebarMenuButton>
+                        {active && (
+                            <div className="pl-6 pt-1 w-full">
+                                <SidebarMenu>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/calendar')}><Link href={createHref('/dashboard/admin/events/calendar')}>Calendar</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/notices')}><Link href={createHref('/dashboard/admin/events/notices')}>Notices</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/events/manage')}><Link href={createHref('/dashboard/admin/events/manage')}>Manage Events</Link></SidebarMenuButton></SidebarMenuItem>
                                 </SidebarMenu>
                             </div>
                         )}
