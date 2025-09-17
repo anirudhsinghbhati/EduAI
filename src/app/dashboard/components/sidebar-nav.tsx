@@ -3,7 +3,7 @@
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck, CalendarDays } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck, CalendarDays, CreditCard } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -18,6 +18,7 @@ const navLinks = {
     { name: "Student Management", href: "/dashboard/admin/roster", icon: Users },
     { name: "Teacher Management", href: "/dashboard/admin/teachers", icon: UserCheck },
     { name: "Timetable", href: "/dashboard/admin/timetable", icon: CalendarDays },
+    { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
   ],
 };
 
