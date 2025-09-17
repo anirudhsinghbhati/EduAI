@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 const LOCAL_STORAGE_KEY = 'teacherRoster';
 
-export function TeacherRoster() {
+export function TeacherManagement() {
   const [teacherCount, setTeacherCount] = useState(0);
 
   useEffect(() => {
