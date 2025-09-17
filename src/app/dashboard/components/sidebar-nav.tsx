@@ -1,9 +1,10 @@
 
+
 'use client';
 
 import { SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck, CalendarDays, CreditCard, FileText, BarChart2 } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Shield, LogOut, Settings, HelpCircle, Users, UserCheck, CalendarDays, CreditCard, FileText, BarChart2, Briefcase } from "lucide-react";
 import { useSearchParams, usePathname } from 'next/navigation';
 
 const navLinks = {
@@ -16,10 +17,7 @@ const navLinks = {
   admin: [
     { name: "Admin Dashboard", href: "/dashboard/admin", icon: Shield },
     { name: "Student Management", href: "/dashboard/admin/students", icon: Users },
-    { name: "Student Records", href: "/dashboard/admin/roster", icon: Users, isSubItem: true },
-    { name: "Enrollment", href: "/dashboard/admin/enrollment", icon: FileText, isSubItem: true },
-    { name: "Performance", href: "/dashboard/admin/performance", icon: BarChart2, isSubItem: true },
-    { name: "Teacher Management", href: "/dashboard/admin/teachers", icon: UserCheck },
+    { name: "Staff Management", href: "/dashboard/admin/staff", icon: Briefcase },
     { name: "Timetable", href: "/dashboard/admin/timetable", icon: CalendarDays },
     { name: "Fee Management", href: "/dashboard/admin/fees", icon: CreditCard },
   ],
@@ -53,6 +51,8 @@ export function SidebarNav() {
     return `${href}?${params.toString()}`;
   }
 
+  const isSubActive = (basePath: string) => pathname.startsWith(basePath);
+
   return (
     <>
       <SidebarHeader>
@@ -65,33 +65,27 @@ export function SidebarNav() {
         <p className="px-2 py-1 text-xs text-muted-foreground">{currentRoleName}</p>
         <SidebarMenu>
           {currentNav.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/dashboard/admin' && pathname.startsWith(item.href));
-            const isSubActive = pathname.startsWith('/dashboard/admin/roster') || pathname.startsWith('/dashboard/admin/enrollment') || pathname.startsWith('/dashboard/admin/performance');
-            
+            let active = pathname === item.href;
+            if (item.href === '/dashboard/admin/students') {
+              active = isSubActive('/dashboard/admin/students') || isSubActive('/dashboard/admin/roster') || isSubActive('/dashboard/admin/enrollment') || isSubActive('/dashboard/admin/performance');
+            }
+             if (item.href === '/dashboard/admin/staff') {
+              active = isSubActive('/dashboard/admin/staff');
+            }
+
+            // Student Management Sub-menu
             if (item.href === "/dashboard/admin/students") {
                  return (
                     <SidebarMenuItem key={item.name} className="flex flex-col items-start">
-                        <SidebarMenuButton asChild variant="default" size="default" isActive={isActive || isSubActive}>
+                        <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
                             <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
                         </SidebarMenuButton>
-                        {(isActive || isSubActive) && (
+                        {active && (
                             <div className="pl-6 pt-1 w-full">
                                 <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.startsWith('/dashboard/admin/roster')}>
-                                            <Link href={createHref('/dashboard/admin/roster')}>Student Records</Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.startsWith('/dashboard/admin/enrollment')}>
-                                            <Link href={createHref('/dashboard/admin/enrollment')}>Enrollment</Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.startsWith('/dashboard/admin/performance')}>
-                                            <Link href={createHref('/dashboard/admin/performance')}>Performance</Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/roster')}><Link href={createHref('/dashboard/admin/roster')}>Records</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/enrollment')}><Link href={createHref('/dashboard/admin/enrollment')}>Enrollment</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/performance')}><Link href={createHref('/dashboard/admin/performance')}>Performance</Link></SidebarMenuButton></SidebarMenuItem>
                                 </SidebarMenu>
                             </div>
                         )}
@@ -99,11 +93,29 @@ export function SidebarNav() {
                 )
             }
 
-            if (item.isSubItem) return null;
+            // Staff Management Sub-menu
+            if (item.href === "/dashboard/admin/staff") {
+                 return (
+                    <SidebarMenuItem key={item.name} className="flex flex-col items-start">
+                        <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
+                            <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
+                        </SidebarMenuButton>
+                        {active && (
+                            <div className="pl-6 pt-1 w-full">
+                                <SidebarMenu>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/records')}><Link href={createHref('/dashboard/admin/staff/records')}>Records</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/leave')}><Link href={createHref('/dashboard/admin/staff/leave')}>Leave</Link></SidebarMenuButton></SidebarMenuItem>
+                                    <SidebarMenuItem><SidebarMenuButton asChild variant="default" size="sm" isActive={pathname.includes('/staff/appraisals')}><Link href={createHref('/dashboard/admin/staff/appraisals')}>Appraisals</Link></SidebarMenuButton></SidebarMenuItem>
+                                </SidebarMenu>
+                            </div>
+                        )}
+                    </SidebarMenuItem>
+                )
+            }
 
             return (
                 <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild variant="default" size="default" isActive={isActive}>
+                <SidebarMenuButton asChild variant="default" size="default" isActive={active}>
                     <Link href={createHref(item.href)}><item.icon /> <span>{item.name}</span></Link>
                 </SidebarMenuButton>
                 </SidebarMenuItem>

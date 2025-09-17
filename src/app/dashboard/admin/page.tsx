@@ -1,11 +1,12 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentManagement } from "./components/student-management";
-import { TeacherManagement } from "./components/teacher-management";
+import { StaffManagement } from "./components/staff-management";
 import { TimetableManager } from "./components/timetable-manager";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
@@ -92,7 +93,7 @@ export default function AdminDashboardPage() {
   const stats = [
     { title: "Total Students", value: studentCount.toString(), icon: Users },
     { title: "Average Attendance", value: `${avgAttendance}%`, icon: Activity },
-    { title: "Teachers Active", value: teacherCount.toString(), icon: UserCheck },
+    { title: "Total Staff", value: teacherCount.toString(), icon: UserCheck },
   ];
 
   return (
@@ -116,7 +117,7 @@ export default function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3 grid gap-6 grid-cols-1 md:grid-cols-2">
             <StudentManagement />
-            <TeacherManagement />
+            <StaffManagement />
             <TimetableManager />
             <FeeManager />
           </div>
