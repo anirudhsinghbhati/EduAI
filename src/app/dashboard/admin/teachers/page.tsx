@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { teacherRoster as initialRoster, type Teacher } from "@/app/lib/teacher-roster";
-import { UploadCloud, UserPlus, Trash2, UserCheck } from "lucide-react";
+import { UploadCloud, UserPlus, Trash2, UserCheck, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -22,6 +22,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const LOCAL_STORAGE_KEY = 'teacherRoster';
 
@@ -68,6 +76,8 @@ export default function TeacherRosterPage() {
                 name: newTeacherName.trim(),
                 subject: newTeacherSubject.trim(),
                 imageUrl: reader.result as string,
+                email: `${newTeacherName.trim().toLowerCase().replace(' ', '.')}@school.edu`,
+                phone: '555-0000',
             };
 
             setRoster(prevRoster => [...prevRoster, newTeacher]);
@@ -123,12 +133,17 @@ export default function TeacherRosterPage() {
         <ScrollArea className="flex-1 -mr-4 pr-4 mb-4">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
             {roster.map((teacher) => (
-                <div key={teacher.id} className="text-center relative pt-2">
-                    <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
-                        <Image src={teacher.imageUrl} alt={teacher.name} fill objectFit="cover" />
+              <Dialog key={teacher.id}>
+                <div className="text-center relative pt-2 group">
+                  <DialogTrigger asChild>
+                    <div className="cursor-pointer">
+                        <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20 group-hover:border-primary transition-colors">
+                            <Image src={teacher.imageUrl} alt={teacher.name} fill objectFit="cover" />
+                        </div>
+                        <p className="text-sm font-medium mt-2 truncate">{teacher.name}</p>
+                        <p className="text-xs text-muted-foreground">{teacher.subject}</p>
                     </div>
-                    <p className="text-sm font-medium mt-2 truncate">{teacher.name}</p>
-                    <p className="text-xs text-muted-foreground">{teacher.subject}</p>
+                  </DialogTrigger>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                         <Button
@@ -159,6 +174,30 @@ export default function TeacherRosterPage() {
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
+                 <DialogContent>
+                    <DialogHeader>
+                        <div className="flex items-center gap-4">
+                            <div className="w-24 h-24 rounded-full overflow-hidden relative border-4 border-primary/20">
+                                <Image src={teacher.imageUrl} alt={teacher.name} fill objectFit="cover" />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-2xl">{teacher.name}</DialogTitle>
+                                <DialogDescription>{teacher.subject}</DialogDescription>
+                            </div>
+                        </div>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <div className="flex items-center gap-3">
+                            <Mail className="w-5 h-5 text-muted-foreground" />
+                            <a href={`mailto:${teacher.email}`} className="text-sm hover:underline">{teacher.email}</a>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <Phone className="w-5 h-5 text-muted-foreground" />
+                            <a href={`tel:${teacher.phone}`} className="text-sm hover:underline">{teacher.phone}</a>
+                        </div>
+                    </div>
+                </DialogContent>
+              </Dialog>
             ))}
             {roster.length === 0 && (
                 <p className="col-span-full text-center text-sm text-muted-foreground py-4">No teachers in the records yet.</p>

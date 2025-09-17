@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX } from "lucide-react";
+import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX, Mail, Phone, UserCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,6 +24,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
@@ -89,6 +97,12 @@ export default function RosterPage() {
                 id: `s${Date.now()}`,
                 name: newStudentName.trim(),
                 imageUrl: reader.result as string,
+                grade: parseInt(roster.find(c => c.id === selectedClassId)?.name.match(/\d+/)?.[0] || '0'),
+                email: `${newStudentName.trim().toLowerCase().replace(' ', '.')}@example.com`,
+                emergencyContact: {
+                  name: `Guardian of ${newStudentName.trim()}`,
+                  phone: '000-000-0000',
+                }
             };
 
             const updatedRoster = roster.map(classGroup => {
@@ -217,41 +231,75 @@ export default function RosterPage() {
                             <AccordionContent>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
                                 {(classGroup.students || []).map((student) => (
-                                <div key={student.id} className="text-center relative pt-2">
-                                    <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
-                                        <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
+                                <Dialog key={student.id}>
+                                    <div className="text-center relative pt-2 group">
+                                         <DialogTrigger asChild>
+                                            <div className="cursor-pointer">
+                                                <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20 group-hover:border-primary transition-colors">
+                                                    <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
+                                                </div>
+                                                <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
+                                            </div>
+                                        </DialogTrigger>
+                                        <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
+                                                className="absolute top-0 right-0 h-6 w-6"
+                                                aria-label={`Delete ${student.name}`}
+                                            >
+                                                <Trash2 className="w-3 h-3" />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently remove {student.name} from the student records.
+                                            </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => handleDeleteStudent(classGroup.id, student.id)}
+                                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            >
+                                                Continue
+                                            </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
-                                    <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                            variant="destructive"
-                                            size="icon"
-                                            className="absolute top-0 right-0 h-6 w-6"
-                                            aria-label={`Delete ${student.name}`}
-                                        >
-                                            <Trash2 className="w-3 h-3" />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently remove {student.name} from the student records.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => handleDeleteStudent(classGroup.id, student.id)}
-                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                          >
-                                            Continue
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                </div>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-24 h-24 rounded-full overflow-hidden relative border-4 border-primary/20">
+                                                     <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
+                                                </div>
+                                                <div>
+                                                    <DialogTitle className="text-2xl">{student.name}</DialogTitle>
+                                                    <DialogDescription>Grade {student.grade} &bull; {classGroup.name}</DialogDescription>
+                                                </div>
+                                            </div>
+                                        </DialogHeader>
+                                        <div className="py-4 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <Mail className="w-5 h-5 text-muted-foreground" />
+                                                <a href={`mailto:${student.email}`} className="text-sm hover:underline">{student.email}</a>
+                                            </div>
+                                            <h4 className="font-semibold mt-4 border-b pb-1">Emergency Contact</h4>
+                                            <div className="flex items-center gap-3">
+                                                <UserCircle className="w-5 h-5 text-muted-foreground" />
+                                                <span className="text-sm">{student.emergencyContact.name}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <Phone className="w-5 h-5 text-muted-foreground" />
+                                                <a href={`tel:${student.emergencyContact.phone}`} className="text-sm hover:underline">{student.emergencyContact.phone}</a>
+                                            </div>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
                                 ))}
                                 {(classGroup.students || []).length === 0 && (
                                     <p className="col-span-full text-center text-sm text-muted-foreground py-4">No students in this class yet.</p>
