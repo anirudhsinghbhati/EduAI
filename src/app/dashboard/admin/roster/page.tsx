@@ -214,39 +214,37 @@ export default function RosterPage() {
                             <AccordionContent>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
                                 {(classGroup.students || []).map((student) => (
-                                <div key={student.id} className="text-center group relative">
+                                <div key={student.id} className="text-center relative pt-2">
                                     <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
                                         <Image src={student.imageUrl} alt={student.name} fill objectFit="cover" />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    variant="destructive"
-                                                    size="icon"
-                                                    className="h-8 w-8"
-                                                    aria-label={`Delete ${student.name}`}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently remove {student.name} from the roster.
-                                                </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
-                                                    Continue
-                                                </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                            </AlertDialog>
-                                        </div>
                                     </div>
                                     <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            className="absolute top-0 right-0 h-6 w-6"
+                                            aria-label={`Delete ${student.name}`}
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently remove {student.name} from the roster.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
+                                            Continue
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                                 ))}
                                 {(classGroup.students || []).length === 0 && (

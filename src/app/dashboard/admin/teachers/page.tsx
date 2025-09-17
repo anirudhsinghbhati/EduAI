@@ -123,40 +123,38 @@ export default function TeacherRosterPage() {
         <ScrollArea className="flex-1 -mr-4 pr-4 mb-4">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
             {roster.map((teacher) => (
-                <div key={teacher.id} className="text-center group relative">
+                <div key={teacher.id} className="text-center relative pt-2">
                     <div className="aspect-square rounded-full overflow-hidden relative border-2 border-primary/20">
                         <Image src={teacher.imageUrl} alt={teacher.name} fill objectFit="cover" />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="destructive"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    aria-label={`Delete ${teacher.name}`}
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently remove {teacher.name} from the roster.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleDeleteTeacher(teacher.id)}>
-                                    Continue
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                        </div>
                     </div>
                     <p className="text-sm font-medium mt-2 truncate">{teacher.name}</p>
                     <p className="text-xs text-muted-foreground">{teacher.subject}</p>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                        <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-0 right-0 h-6 w-6"
+                            aria-label={`Delete ${teacher.name}`}
+                        >
+                            <Trash2 className="w-3 h-3" />
+                        </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                            This action cannot be undone. This will permanently remove {teacher.name} from the roster.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteTeacher(teacher.id)}>
+                            Continue
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             ))}
             {roster.length === 0 && (
