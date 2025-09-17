@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { studentRoster as initialRoster, type Student, type ClassGroup } from "@/app/lib/student-roster";
-import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX, Mail, Phone, UserCircle } from "lucide-react";
+import { UploadCloud, UserPlus, Users, Trash2, FolderPlus, FolderX, Mail, Phone, UserCircle, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,6 +28,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -41,6 +42,13 @@ export default function RosterPage() {
   const [newStudentFile, setNewStudentFile] = useState<File | null>(null);
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [newClassName, setNewClassName] = useState("");
+  
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<(Student & { classId: string }) | null>(null);
+  const [updatedStudentName, setUpdatedStudentName] = useState("");
+  const [updatedStudentFile, setUpdatedStudentFile] = useState<File | null>(null);
+  const [updatedStudentClassId, setUpdatedStudentClassId] = useState("");
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -134,6 +142,77 @@ export default function RosterPage() {
         });
     }
   };
+
+  const handleOpenEditDialog = (student: Student, classId: string) => {
+    setEditingStudent({ ...student, classId });
+    setUpdatedStudentName(student.name);
+    setUpdatedStudentClassId(classId);
+    setUpdatedStudentFile(null);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateStudent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingStudent) return;
+
+    const processUpdate = (imageUrl: string) => {
+      const updatedStudentData = {
+        ...editingStudent,
+        name: updatedStudentName,
+        imageUrl,
+      };
+
+      let newRoster = [...roster];
+
+      // If class has changed, move the student
+      if (editingStudent.classId !== updatedStudentClassId) {
+        // Remove from old class
+        newRoster = newRoster.map(cg => {
+          if (cg.id === editingStudent.classId) {
+            return { ...cg, students: cg.students.filter(s => s.id !== editingStudent.id) };
+          }
+          return cg;
+        });
+        // Add to new class
+        newRoster = newRoster.map(cg => {
+          if (cg.id === updatedStudentClassId) {
+            return { ...cg, students: [...cg.students, updatedStudentData] };
+          }
+          return cg;
+        });
+      } else {
+        // Just update in the same class
+        newRoster = newRoster.map(cg => {
+          if (cg.id === editingStudent.classId) {
+            return {
+              ...cg,
+              students: cg.students.map(s => s.id === editingStudent.id ? updatedStudentData : s)
+            };
+          }
+          return cg;
+        });
+      }
+
+      setRoster(newRoster);
+      toast({
+        title: "✅ Student Updated",
+        description: `${updatedStudentData.name}'s details have been updated.`,
+      });
+      setIsEditDialogOpen(false);
+      setEditingStudent(null);
+    };
+
+    if (updatedStudentFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        processUpdate(reader.result as string);
+      };
+      reader.readAsDataURL(updatedStudentFile);
+    } else {
+      processUpdate(editingStudent.imageUrl);
+    }
+  };
+
 
   const handleDeleteStudent = (classId: string, studentId: string) => {
     let studentName = "";
@@ -241,35 +320,46 @@ export default function RosterPage() {
                                                 <p className="text-sm font-medium mt-2 truncate">{student.name}</p>
                                             </div>
                                         </DialogTrigger>
-                                        <AlertDialog>
-                                        <AlertDialogTrigger asChild>
+                                        <div className="absolute top-0 right-0 flex gap-1">
                                             <Button
-                                                variant="destructive"
+                                                variant="outline"
                                                 size="icon"
-                                                className="absolute top-0 right-0 h-6 w-6"
-                                                aria-label={`Delete ${student.name}`}
+                                                className="h-6 w-6"
+                                                aria-label={`Edit ${student.name}`}
+                                                onClick={() => handleOpenEditDialog(student, classGroup.id)}
                                             >
-                                                <Trash2 className="w-3 h-3" />
+                                                <Edit className="w-3 h-3" />
                                             </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently remove {student.name} from the student records.
-                                            </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={() => handleDeleteStudent(classGroup.id, student.id)}
-                                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                            >
-                                                Continue
-                                            </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                        </AlertDialog>
+                                            <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    className="h-6 w-6"
+                                                    aria-label={`Delete ${student.name}`}
+                                                >
+                                                    <Trash2 className="w-3 h-3" />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently remove {student.name} from the student records.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={() => handleDeleteStudent(classGroup.id, student.id)}
+                                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                >
+                                                    Continue
+                                                </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
                                     </div>
                                     <DialogContent>
                                         <DialogHeader>
@@ -393,6 +483,59 @@ export default function RosterPage() {
                 </CardContent>
             </Card>
         </div>
+
+        {/* Edit Student Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit Student Details</DialogTitle>
+                    <DialogDescription>
+                        Update the information for {editingStudent?.name}.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleUpdateStudent} className="space-y-4 py-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="edit-student-name">Student Name</Label>
+                        <Input
+                            id="edit-student-name"
+                            value={updatedStudentName}
+                            onChange={(e) => setUpdatedStudentName(e.target.value)}
+                            required
+                        />
+                    </div>
+                     <div className="grid gap-2">
+                        <Label htmlFor="edit-class-select">Class</Label>
+                        <Select value={updatedStudentClassId} onValueChange={setUpdatedStudentClassId}>
+                            <SelectTrigger id="edit-class-select">
+                                <SelectValue placeholder="Choose a class..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roster.map((classGroup) => (
+                                    <SelectItem key={classGroup.id} value={classGroup.id}>
+                                        {classGroup.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="edit-student-photo">New Student Photo (Optional)</Label>
+                        <Input
+                            id="edit-student-photo"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setUpdatedStudentFile(e.target.files?.[0] || null)}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" type="button" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+                        <Button type="submit">Save Changes</Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }
+
+    
