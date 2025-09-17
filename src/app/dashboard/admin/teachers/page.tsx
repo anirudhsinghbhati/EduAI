@@ -149,8 +149,11 @@ export default function TeacherRosterPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteTeacher(teacher.id)}>
-                            Continue
+                            <AlertDialogAction
+                                onClick={() => handleDeleteTeacher(teacher.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                Continue
                             </AlertDialogAction>
                         </AlertDialogFooter>
                         </AlertDialogContent>

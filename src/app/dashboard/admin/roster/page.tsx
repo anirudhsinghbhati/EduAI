@@ -204,8 +204,11 @@ export default function RosterPage() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleDeleteClass(classGroup.id)}>
-                                        Continue
+                                        <AlertDialogAction
+                                            onClick={() => handleDeleteClass(classGroup.id)}
+                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                        >
+                                            Continue
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                     </AlertDialogContent>
@@ -239,7 +242,10 @@ export default function RosterPage() {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                          <AlertDialogAction onClick={() => handleDeleteStudent(classGroup.id, student.id)}>
+                                          <AlertDialogAction
+                                            onClick={() => handleDeleteStudent(classGroup.id, student.id)}
+                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                          >
                                             Continue
                                           </AlertDialogAction>
                                         </AlertDialogFooter>
