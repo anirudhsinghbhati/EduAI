@@ -1,42 +1,12 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserCheck, ArrowRight } from "lucide-react";
-import { teacherRoster as initialRoster, type Teacher } from "@/app/lib/teacher-roster";
 import { Button } from "@/components/ui/button";
 
-const LOCAL_STORAGE_KEY = 'teacherRoster';
-
 export function TeacherManagement() {
-  const [teacherCount, setTeacherCount] = useState(0);
-
-  useEffect(() => {
-    const updateStats = () => {
-        try {
-            const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-            const roster: Teacher[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
-            setTeacherCount(roster.length);
-        } catch (error) {
-            console.error("Failed to load teacher data from localStorage", error);
-            setTeacherCount(initialRoster.length);
-        }
-    };
-    
-    updateStats();
-    
-    // Listen for updates from other components
-    window.addEventListener('teacherRosterUpdated', updateStats);
-    const interval = setInterval(updateStats, 2000); // Fallback polling
-
-    return () => {
-        window.removeEventListener('teacherRosterUpdated', updateStats);
-        clearInterval(interval);
-    };
-  }, []);
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -46,14 +16,11 @@ export function TeacherManagement() {
         </CardTitle>
         <CardDescription>Manage teacher profiles and subjects.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col justify-between">
-        <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                <span className="font-medium">Total Teachers</span>
-                <span className="text-2xl font-bold">{teacherCount}</span>
-            </div>
-        </div>
-        <Button asChild className="mt-4 w-full">
+      <CardContent className="flex-1 flex flex-col justify-center">
+         <p className="text-center text-muted-foreground mb-4">
+          Add, remove, and view detailed teacher records.
+        </p>
+        <Button asChild className="mt-auto w-full">
           <Link href="/dashboard/admin/teachers">
             Manage Teachers
             <ArrowRight className="ml-2" />
