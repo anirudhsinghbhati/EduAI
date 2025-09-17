@@ -10,7 +10,7 @@ export default function Home() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span className="font-bold text-lg">EduAI</span>
+            <span className="font-bold text-lg">EduTrack</span>
           </Link>
           <div className="flex items-center gap-2">
               <Button variant="ghost" asChild>
@@ -32,7 +32,7 @@ export default function Home() {
                   The Future of Education is Here
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto lg:mx-0">
-                  EduAI automates attendance, personalizes learning, and streamlines school administration with the power of artificial intelligence.
+                  EduTrack automates attendance, personalizes learning, and streamlines school administration with the power of artificial intelligence.
                 </p>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center lg:justify-start">
                   <Button asChild size="lg">
@@ -60,7 +60,7 @@ export default function Home() {
                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Key Features</div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Everything You Need for a Smarter School</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                  Discover the powerful tools that make EduAI the perfect solution for modern education.
+                  Discover the powerful tools that make EduTrack the perfect solution for modern education.
                 </p>
               </div>
             </div>
@@ -103,7 +103,7 @@ export default function Home() {
                     <div className="space-y-3">
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Get Started in 3 Easy Steps</h2>
                         <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                            EduAI is designed to be simple and intuitive to set up.
+                            EduTrack is designed to be simple and intuitive to set up.
                         </p>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ export default function Home() {
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <div className="container mx-auto flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">&copy; 2024 EduAI. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">&copy; 2024 EduTrack. All rights reserved.</p>
         </div>
       </footer>
     </div>

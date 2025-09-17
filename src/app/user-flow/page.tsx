@@ -68,7 +68,7 @@ export default function UserFlowPage() {
     <div className="w-full">
         <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight">User Flow</h1>
-            <p className="text-muted-foreground mt-2">A high-level overview of the primary user journeys in EduAI.</p>
+            <p className="text-muted-foreground mt-2">A high-level overview of the primary user journeys in EduTrack.</p>
         </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 justify-items-center">
         {flowData.map((data) => (

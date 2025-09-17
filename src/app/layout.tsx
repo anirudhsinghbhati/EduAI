@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'EduAI',
+  title: 'EduTrack',
   description: 'Smart Attendance & Personalized Learning System',
 };
 

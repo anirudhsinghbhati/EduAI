@@ -1,6 +1,6 @@
 # EduTrack - Smart Attendance & Personalized Learning System
 
-EduAI is a modern, AI-powered educational platform designed to streamline school administration, enhance the teaching process, and provide personalized learning experiences for students. Built with Next.js, Genkit, and ShadCN UI, this application demonstrates a practical implementation of AI in education.
+EduTrack is a modern, AI-powered educational platform designed to streamline school administration, enhance the teaching process, and provide personalized learning experiences for students. Built with Next.js, Genkit, and ShadCN UI, this application demonstrates a practical implementation of AI in education.
 
 ## Key Features
 
