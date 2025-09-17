@@ -289,14 +289,18 @@ export default function RosterPage() {
                                                 <a href={`mailto:${student.email}`} className="text-sm hover:underline">{student.email}</a>
                                             </div>
                                             <h4 className="font-semibold mt-4 border-b pb-1">Emergency Contact</h4>
-                                            <div className="flex items-center gap-3">
-                                                <UserCircle className="w-5 h-5 text-muted-foreground" />
-                                                <span className="text-sm">{student.emergencyContact.name}</span>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <Phone className="w-5 h-5 text-muted-foreground" />
-                                                <a href={`tel:${student.emergencyContact.phone}`} className="text-sm hover:underline">{student.emergencyContact.phone}</a>
-                                            </div>
+                                            {student.emergencyContact && (
+                                                <>
+                                                    <div className="flex items-center gap-3">
+                                                        <UserCircle className="w-5 h-5 text-muted-foreground" />
+                                                        <span className="text-sm">{student.emergencyContact.name}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <Phone className="w-5 h-5 text-muted-foreground" />
+                                                        <a href={`tel:${student.emergencyContact.phone}`} className="text-sm hover:underline">{student.emergencyContact.phone}</a>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </DialogContent>
                                 </Dialog>
