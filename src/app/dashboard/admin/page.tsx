@@ -95,8 +95,9 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="grid gap-6">
-      <div className="grid gap-6 md:grid-cols-3">
+    <div className="flex flex-col gap-6">
+      {/* Top Row: Quick Stats */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -110,12 +111,17 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-          <StudentRoster />
-          <TeacherRoster />
-          <TimetableManager />
+      {/* Middle Row: Management Cards */}
+      <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
+            <StudentRoster />
+            <TeacherRoster />
+            <TimetableManager />
+          </div>
           <SystemAnnouncements />
       </div>
+      
+      {/* Bottom Row: Analytics */}
       <div>
         <PlatformAnalytics studentCount={studentCount} teacherCount={teacherCount} />
       </div>
