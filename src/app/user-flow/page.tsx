@@ -54,10 +54,10 @@ const RoleColumn = ({ role, color, textColor, steps }: { role: string, color: st
     <h2 className={`text-2xl font-bold p-2 rounded-md ${color} ${textColor}`}>{role}</h2>
     <div className="flex flex-col items-center gap-2">
       {steps.map((step, index) => (
-        <>
+        <React.Fragment key={step}>
           <FlowStep text={step} color={color} textColor={textColor} />
           {index < steps.length - 1 && <ArrowDown className={`w-6 h-6 ${textColor}`} />}
-        </>
+        </React.Fragment>
       ))}
     </div>
   </div>
