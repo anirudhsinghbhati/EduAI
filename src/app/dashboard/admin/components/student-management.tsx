@@ -89,8 +89,8 @@ export function StudentManagement() {
             </div>
         </div>
         <Button asChild className="mt-4 w-full">
-          <Link href="/dashboard/admin/roster">
-            Manage All Students
+          <Link href="/dashboard/admin/students">
+            Go to Student Hub
             <ArrowRight className="ml-2" />
           </Link>
         </Button>
