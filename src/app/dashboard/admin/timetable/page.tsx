@@ -34,12 +34,12 @@ const LOCAL_STORAGE_TEACHER_KEY = 'teacherRoster';
 
 const daysOfWeek: TimetableEntry['day'][] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const timeSlots = [
-  "09:00 - 10:00",
-  "10:00 - 11:00",
-  "11:00 - 12:00",
-  "12:00 - 13:00",
-  "13:00 - 14:00",
-  "14:00 - 15:00",
+  "09:00 AM - 10:00 AM",
+  "10:00 AM - 11:00 AM",
+  "11:00 AM - 12:00 PM",
+  "12:00 PM - 01:00 PM",
+  "01:00 PM - 02:00 PM",
+  "02:00 PM - 03:00 PM",
 ];
 
 export default function TimetablePage() {
@@ -290,5 +290,7 @@ export default function TimetablePage() {
     </Card>
   );
 }
+
+    
 
     
