@@ -5,17 +5,42 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } fro
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart as BarChartIcon } from "lucide-react";
 
-const data = [
-  { name: "Mon", students: 400, teachers: 24, admins: 5 },
-  { name: "Tue", students: 300, teachers: 13, admins: 4 },
-  { name: "Wed", students: 500, teachers: 48, admins: 8 },
-  { name: "Thu", students: 478, teachers: 39, admins: 6 },
-  { name: "Fri", students: 689, teachers: 48, admins: 9 },
-  { name: "Sat", students: 139, teachers: 8, admins: 2 },
-  { name: "Sun", students: 90, teachers: 3, admins: 1 },
-];
+// Helper function to create a stable but pseudo-random number from a seed
+const pseudoRandom = (seed: number) => {
+    let hash = seed;
+    hash = ((hash >> 16) ^ hash) * 0x45d9f3b;
+    hash = ((hash >> 16) ^ hash) * 0x45d9f3b;
+    hash = (hash >> 16) ^ hash;
+    return Math.abs(hash);
+};
 
-export function PlatformAnalytics() {
+// Generate dynamic but stable chart data based on user counts
+const generateChartData = (studentCount: number, teacherCount: number) => {
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const baseAdminCount = Math.max(1, Math.floor(teacherCount / 10));
+
+    return days.map((day, index) => {
+        const seed = studentCount + teacherCount + index;
+        const studentMultiplier = [0.8, 0.7, 0.9, 0.85, 0.95, 0.2, 0.15][index];
+        const teacherMultiplier = [0.9, 0.8, 1.0, 0.9, 1.0, 0.3, 0.2][index];
+        
+        const students = Math.floor(studentCount * studentMultiplier * (1 - (pseudoRandom(seed) % 15) / 100));
+        const teachers = Math.floor(teacherCount * teacherMultiplier * (1 - (pseudoRandom(seed + 1) % 15) / 100));
+        const admins = Math.floor(baseAdminCount * teacherMultiplier) + (pseudoRandom(seed + 2) % 3);
+
+        return {
+            name: day,
+            students: Math.max(0, students),
+            teachers: Math.max(0, teachers),
+            admins: Math.max(0, admins),
+        };
+    });
+};
+
+
+export function PlatformAnalytics({ studentCount, teacherCount }: { studentCount: number; teacherCount: number }) {
+  const data = generateChartData(studentCount, teacherCount);
+
   return (
     <Card>
       <CardHeader>

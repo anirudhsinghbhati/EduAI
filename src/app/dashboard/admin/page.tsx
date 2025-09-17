@@ -6,48 +6,79 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
 import { PlatformAnalytics } from "./components/platform-analytics";
-import { Users, Activity } from "lucide-react";
+import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
 
 const LOCAL_STORAGE_KEY = 'studentRoster';
 
+// Helper function to create a stable but pseudo-random number from a string (e.g., date)
+const pseudoRandom = (seed: string) => {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+        const char = seed.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+};
+
+
 export default function AdminDashboardPage() {
   const [studentCount, setStudentCount] = useState(0);
+  const [classCount, setClassCount] = useState(0);
+  const [avgAttendance, setAvgAttendance] = useState(0);
+  const [activeTeachers, setActiveTeachers] = useState(0);
+
+  const updateDashboardStats = () => {
+      try {
+          const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
+          const roster: ClassGroup[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
+          
+          const totalStudents = roster.reduce((total, classGroup) => {
+              if (classGroup && Array.isArray(classGroup.students)) {
+                  return total + classGroup.students.length;
+              }
+              return total;
+          }, 0);
+
+          const totalClasses = roster.length;
+
+          setStudentCount(totalStudents);
+          setClassCount(totalClasses);
+
+          // Generate stable, dynamic mock data based on roster size
+          const today = new Date().toISOString().slice(0, 10); // Seed for today's data
+          const seed = `${today}-${totalStudents}-${totalClasses}`;
+          const randomNumber = pseudoRandom(seed);
+          
+          // Calculate dynamic but stable "Average Attendance"
+          const attendance = 85 + (randomNumber % 11); // Stable attendance between 85-95%
+          setAvgAttendance(attendance);
+          
+          // Calculate dynamic but stable "Active Teachers"
+          const teachers = totalClasses + Math.floor(totalClasses / 2) + (randomNumber % 5);
+          setActiveTeachers(teachers);
+
+      } catch (error) {
+          console.error("Failed to load or parse roster from localStorage", error);
+          setStudentCount(0);
+          setClassCount(0);
+          setAvgAttendance(88); // Fallback
+          setActiveTeachers(5); // Fallback
+      }
+  };
 
   useEffect(() => {
-    const calculateTotalStudents = (roster: ClassGroup[]) => {
-        return roster.reduce((total, classGroup) => {
-            // Add a check to ensure classGroup.students is an array
-            if (classGroup && Array.isArray(classGroup.students)) {
-                return total + classGroup.students.length;
-            }
-            return total;
-        }, 0);
-    };
+    updateDashboardStats(); // Initial count
 
-    const updateStudentCount = () => {
-        try {
-            const savedRoster = localStorage.getItem(LOCAL_STORAGE_KEY);
-            const roster: ClassGroup[] = savedRoster ? JSON.parse(savedRoster) : initialRoster;
-            setStudentCount(calculateTotalStudents(roster));
-        } catch (error) {
-            console.error("Failed to load or parse roster from localStorage", error);
-            setStudentCount(calculateTotalStudents(initialRoster));
-        }
-    };
-    
-    updateStudentCount(); // Initial count
-
-    // A custom event listener to handle updates from the StudentRoster component
+    // Listen for custom event when roster is updated in another component
     const handleRosterUpdate = () => {
-        updateStudentCount();
+        updateDashboardStats();
     };
-
     window.addEventListener('rosterUpdated', handleRosterUpdate);
 
-    // This is necessary because localStorage updates don't trigger re-renders across components automatically
-    // Polling is a simple way to keep the count in sync without complex state management
-    const interval = setInterval(updateStudentCount, 1500);
+    // Also use an interval as a fallback to ensure sync if the event fails
+    const interval = setInterval(updateDashboardStats, 2000);
 
     return () => {
         window.removeEventListener('rosterUpdated', handleRosterUpdate);
@@ -57,8 +88,8 @@ export default function AdminDashboardPage() {
 
   const stats = [
     { title: "Total Students", value: studentCount.toString(), icon: Users },
-    { title: "Average Attendance", value: "93%", icon: Activity },
-    { title: "Teachers Active", value: "58", icon: Users },
+    { title: "Average Attendance", value: `${avgAttendance}%`, icon: Activity },
+    { title: "Teachers Active", value: activeTeachers.toString(), icon: UserCheck },
   ];
 
   return (
@@ -86,7 +117,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
       <div>
-        <PlatformAnalytics />
+        <PlatformAnalytics studentCount={studentCount} teacherCount={activeTeachers} />
       </div>
     </div>
   );
