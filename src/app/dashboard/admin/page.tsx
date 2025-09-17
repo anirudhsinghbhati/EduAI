@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SystemAnnouncements } from "./components/system-announcements";
 import { StudentRoster } from "./components/student-roster";
 import { TeacherRoster } from "./components/teacher-roster";
+import { TimetableManager } from "./components/timetable-manager";
 import { PlatformAnalytics } from "./components/platform-analytics";
 import { Users, Activity, UserCheck } from "lucide-react";
 import { studentRoster as initialRoster, type ClassGroup } from "@/app/lib/student-roster";
@@ -109,16 +110,11 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-1">
-            <StudentRoster />
-        </div>
-         <div className="lg:col-span-1">
-            <TeacherRoster />
-        </div>
-        <div className="lg:col-span-1">
-            <SystemAnnouncements />
-        </div>
+      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+          <StudentRoster />
+          <TeacherRoster />
+          <TimetableManager />
+          <SystemAnnouncements />
       </div>
       <div>
         <PlatformAnalytics studentCount={studentCount} teacherCount={teacherCount} />
